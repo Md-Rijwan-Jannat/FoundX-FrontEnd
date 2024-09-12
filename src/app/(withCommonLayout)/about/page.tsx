@@ -5,7 +5,7 @@ type TAboutPageProps = object;
 const AboutPage: FC<TAboutPageProps> = () => {
   return (
     <div>
-      <h2>This is a AboutPage component</h2>
+      <h2 className="">This is a AboutPage component</h2>
     </div>
   );
 };
