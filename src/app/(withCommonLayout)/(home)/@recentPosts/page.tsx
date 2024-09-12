@@ -6,12 +6,13 @@ import { delay } from "@/src/utils/delay";
 import { Button } from "@nextui-org/button";
 import Link from "next/link";
 import RecentPostCard from "@/src/components/ui/cards/recentPostCard";
+import SectionTitle from "@/src/components/ui/sectionTitle";
 
 type TRecentPostsProps = object;
 
 const RecentPosts: FC<TRecentPostsProps> = async () => {
   const { data: posts } = await AllRecentPosts();
-  await delay(1000);
+  await delay(5000);
 
   if (!posts.length) {
     return (
@@ -24,13 +25,13 @@ const RecentPosts: FC<TRecentPostsProps> = async () => {
 
   return (
     <div className="my-8">
-      <div className="text-center my-6 w-[90%] md:w-[80%] mx-auto">
-        <h2 className="text-xl font-bold">Recently Found Items</h2>
-        <p className="text-sm font-normal">
-          Explore the most recent items that have been found and reported,
-          helping to reunite lost belongings with their owners.
-        </p>
-      </div>
+      {/* Section Title */}
+      <SectionTitle
+        title="Recently Found Items"
+        subtitle="Explore the most recent items that have been found and reported,
+          helping to reunite lost belongings with their owners."
+        alignment="center"
+      />
       <div className="text-start my-6">
         <Chip startContent={<CgSearchFound size={20} />} variant="bordered">
           Recent Posts
