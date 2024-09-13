@@ -12,9 +12,11 @@ const SectionTitle: FC<TSectionTitleProps> = ({
   alignment = "center",
 }) => {
   return (
-    <div className={`text-${alignment} my-6 w-[90%] md:w-[80%] mx-auto`}>
-      <h2 className="text-xl font-bold">{title}</h2>
-      {subtitle && <p className="text-sm font-normal">{subtitle}</p>}
+    <div className={`text-${alignment} my-6 w-[85%] md:w-[50%] mx-auto`}>
+      <h2 className="text-xl font-bold text-default-800">{title}</h2>
+      {subtitle && (
+        <p className="text-sm font-normal text-default-500">{subtitle}</p>
+      )}
     </div>
   );
 };

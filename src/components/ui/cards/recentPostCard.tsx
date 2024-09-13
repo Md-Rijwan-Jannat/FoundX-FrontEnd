@@ -27,9 +27,9 @@ const RecentPostCard: FC<TRecentPostCardProps> = ({ post }) => {
       {" "}
       <Card isFooterBlurred className="w-full h-[300px]">
         <CardFooter className="justify-between before:bg-white/10 border-white/20 border-1 overflow-hidden py-1 absolute top-3 before:rounded-xl rounded-large w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
-          <p className="text-tiny text-black/80">{post.title}</p>
+          <p className="text-tiny text-secondary/80">{post.title}</p>
           <Chip
-            className="text-tiny text-white bg-black/20"
+            className="text-tiny text-secondary/70 bg-black/20"
             variant="flat"
             color="default"
             radius="lg"
@@ -68,7 +68,13 @@ const RecentPostCard: FC<TRecentPostCardProps> = ({ post }) => {
               </p>
             </div>
           </div>
-          <Button radius="full" color="secondary" variant="faded" size="sm">
+          <Button
+            radius="full"
+            color="secondary"
+            variant="bordered"
+            size="sm"
+            className="text-default-700"
+          >
             Details
           </Button>
         </CardFooter>

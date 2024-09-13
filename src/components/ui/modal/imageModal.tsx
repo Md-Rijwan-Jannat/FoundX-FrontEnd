@@ -18,7 +18,7 @@ const ImageModal: FC<TImageModalProps> = ({
 }) => {
   return (
     <Modal
-      size="5xl"
+      size="3xl"
       placement="center"
       isOpen={isOpen}
       onOpenChange={onOpenChange}
@@ -36,12 +36,13 @@ const ImageModal: FC<TImageModalProps> = ({
             </ModalHeader>
 
             {/* Image */}
-            <ModalBody className="flex justify-center items-center mb-5 max-w-full h-full mx-3 md:mx-5">
+            <ModalBody className="flex justify-center items-center max-w-full h-full mb-4">
               <Image
                 isZoomed
+                isBlurred
                 src={imageUrl}
                 alt={alt}
-                className="rounded-lg md:max-w-5xl h-full object-cover w-full md:w-[62rem]"
+                className="rounded-none md:max-w-3xl h-full object-cover w-full md:w-[45rem]"
               />
             </ModalBody>
           </>

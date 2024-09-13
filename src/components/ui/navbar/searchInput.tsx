@@ -10,8 +10,11 @@ export const searchInput = (
       input: "text-sm",
     }}
     endContent={
-      <Kbd className="hidden lg:inline-block" keys={["command"]}>
-        Found Item
+      <Kbd
+        className="hidden lg:inline-block whitespace-nowrap"
+        keys={["command"]}
+      >
+        Ctrl+K
       </Kbd>
     }
     labelPlacement="outside"

@@ -1,83 +1,65 @@
 "use client";
 
-import { FC } from "react";
+import { FC, useState, useEffect } from "react";
 import { VisuallyHidden } from "@react-aria/visually-hidden";
-import { SwitchProps, useSwitch } from "@nextui-org/switch";
 import { useTheme } from "next-themes";
-import { useIsSSR } from "@react-aria/ssr";
 import clsx from "clsx";
-
 import { SunFilledIcon, MoonFilledIcon } from "@/src/components/ui/icons";
+import { Button } from "@nextui-org/button";
 
 export interface ThemeSwitchProps {
   className?: string;
-  classNames?: SwitchProps["classNames"];
 }
 
-export const ThemeSwitch: FC<ThemeSwitchProps> = ({
-  className,
-  classNames,
-}) => {
-  const { theme, setTheme } = useTheme();
-  const isSSR = useIsSSR();
+export const ThemeSwitch: FC<ThemeSwitchProps> = ({ className }) => {
+  const { theme, setTheme, resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
-  const onChange = () => {
-    theme === "light" ? setTheme("dark") : setTheme("light");
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
+
+  const isLightTheme = theme === "light" || resolvedTheme === "light";
+
+  const toggleTheme = () => {
+    setTheme(isLightTheme ? "dark" : "light");
   };
 
-  const {
-    Component,
-    slots,
-    isSelected,
-    getBaseProps,
-    getInputProps,
-    getWrapperProps,
-  } = useSwitch({
-    isSelected: theme === "light" || isSSR,
-    "aria-label": `Switch to ${
-      theme === "light" || isSSR ? "dark" : "light"
-    } mode`,
-    onChange,
-  });
-
   return (
-    <Component
-      {...getBaseProps({
-        className: clsx(
-          "px-px transition-opacity hover:opacity-80 cursor-pointer",
-          className,
-          classNames?.base
-        ),
-      })}
+    <div
+      className={clsx(
+        "px-px transition-opacity hover:opacity-80 cursor-pointer",
+        className
+      )}
     >
       <VisuallyHidden>
-        <input {...getInputProps()} />
+        {/* Hidden input for accessibility */}
+        <input
+          type="checkbox"
+          aria-label="Theme switch"
+          checked={isLightTheme}
+          onChange={toggleTheme}
+        />
       </VisuallyHidden>
-      <div
-        {...getWrapperProps()}
-        className={slots.wrapper({
-          class: clsx(
-            [
-              "w-auto h-auto",
-              "bg-transparent",
-              "rounded-lg",
-              "flex items-center justify-center",
-              "group-data-[selected=true]:bg-transparent",
-              "!text-default-500",
-              "pt-px",
-              "px-0",
-              "mx-0",
-            ],
-            classNames?.wrapper
-          ),
-        })}
+      <Button
+        isIconOnly
+        onClick={toggleTheme}
+        color="secondary"
+        variant="flat"
+        radius="full"
+        aria-label={`Switch to ${isLightTheme ? "dark" : "light"} mode`}
+        className="flex items-center justify-center"
       >
-        {!isSelected || isSSR ? (
+        {isLightTheme ? (
           <SunFilledIcon className="text-secondary" size={22} />
         ) : (
           <MoonFilledIcon className="text-secondary" size={22} />
         )}
-      </div>
-    </Component>
+      </Button>
+    </div>
   );
 };

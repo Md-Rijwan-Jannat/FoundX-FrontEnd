@@ -1,18 +1,13 @@
-import { FC } from "react";
 import { AllRecentPosts } from "@/src/services/recentPosts";
 import { Chip } from "@nextui-org/chip";
 import { CgSearchFound } from "react-icons/cg";
-import { delay } from "@/src/utils/delay";
 import { Button } from "@nextui-org/button";
 import Link from "next/link";
 import RecentPostCard from "@/src/components/ui/cards/recentPostCard";
 import SectionTitle from "@/src/components/ui/sectionTitle";
 
-type TRecentPostsProps = object;
-
-const RecentPosts: FC<TRecentPostsProps> = async () => {
+const RecentPosts = async () => {
   const { data: posts } = await AllRecentPosts();
-  await delay(5000);
 
   if (!posts.length) {
     return (
