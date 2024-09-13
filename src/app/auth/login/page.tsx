@@ -5,21 +5,23 @@ import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/card";
 import { FaUserAlt, FaLock } from "react-icons/fa";
 import Logo from "@/src/components/ui/logo";
 import Link from "next/link";
+import SocialLogin from "@/src/components/form/SocailLogin";
 
 type TLoginPageProps = object;
 
 const LoginPage: FC<TLoginPageProps> = () => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      <Card className="max-w-md w-full p-6 shadow-lg" isHoverable>
+    <div className="flex flex-col items-center justify-center min-h-screen m-2">
+      <Card className="max-w-xl w-full px-2 py-6 md:p-6" isHoverable>
         <CardHeader className="flex flex-col items-center">
           <h2 className="text-2xl font-bold text-default-800 flex items-center gap-2">
             <Logo />
           </h2>
-          <p className="text-default-500 mt-2">
+          <p className="text-default-500 mt-2 text-center">
             Welcome back! Please login to your account.
           </p>
         </CardHeader>
+        <SocialLogin />
         <CardBody className="mt-6">
           <form className="space-y-4">
             <Input
