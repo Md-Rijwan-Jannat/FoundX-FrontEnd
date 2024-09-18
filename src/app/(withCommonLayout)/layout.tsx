@@ -1,6 +1,8 @@
-import Footer from "@/src/components/ui/footer/footer";
-import { Navbar } from "@/src/components/ui/navbar/navbar";
 import { FC } from "react";
+
+import Footer from "@/src/components/ui/footer";
+import { Navbar } from "@/src/components/ui/navbar";
+import NavBlurEffect from "@/src/components/ui/navbar/navBlurEffect";
 
 type TCommonLayoutProps = {
   children: React.ReactNode;
@@ -8,7 +10,8 @@ type TCommonLayoutProps = {
 
 const CommonLayout: FC<TCommonLayoutProps> = ({ children }) => {
   return (
-    <div className="relative flex flex-col">
+    <div>
+      <NavBlurEffect />
       <Navbar />
       <main className="min-h-screen">{children}</main>
       <Footer />

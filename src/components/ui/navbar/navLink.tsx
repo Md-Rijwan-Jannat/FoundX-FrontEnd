@@ -7,6 +7,7 @@ type TNavLinkProps = { item: { label: string; href: string } };
 
 const NavLink: FC<TNavLinkProps> = ({ item }) => {
   const pathname = usePathname();
+
   return (
     <NextLink
       className={`${

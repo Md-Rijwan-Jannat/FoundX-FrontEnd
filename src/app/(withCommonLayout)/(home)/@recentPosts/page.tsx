@@ -1,8 +1,9 @@
-import { AllRecentPosts } from "@/src/services/recentPosts";
 import { Chip } from "@nextui-org/chip";
 import { CgSearchFound } from "react-icons/cg";
 import { Button } from "@nextui-org/button";
 import Link from "next/link";
+
+import { AllRecentPosts } from "@/src/services/recentPostService";
 import RecentPostCard from "@/src/components/ui/cards/recentPostCard";
 import SectionTitle from "@/src/components/ui/sectionTitle";
 
@@ -22,10 +23,10 @@ const RecentPosts = async () => {
     <div className="my-8">
       {/* Section Title */}
       <SectionTitle
-        title="Recently Found Items"
+        alignment="center"
         subtitle="Explore the most recent items that have been found and reported,
           helping to reunite lost belongings with their owners."
-        alignment="center"
+        title="Recently Found Items"
       />
       <div className="text-start my-6">
         <Chip startContent={<CgSearchFound size={20} />} variant="bordered">

@@ -1,13 +1,15 @@
 "use client";
 import { FC, useState } from "react";
-import { TPost } from "@/src/types";
 import { Button } from "@nextui-org/button";
 import { Card, CardFooter } from "@nextui-org/card";
 import { Chip } from "@nextui-org/chip";
 import { Image } from "@nextui-org/image";
 import { format } from "date-fns";
-import ImageModal from "../modal/imageModal";
 import { Avatar } from "@nextui-org/avatar";
+
+import ImageModal from "../modal/imageModal";
+
+import { TPost } from "@/src/types";
 
 type TRecentPostCardProps = {
   post: TPost;
@@ -30,9 +32,9 @@ const RecentPostCard: FC<TRecentPostCardProps> = ({ post }) => {
           <p className="text-tiny text-secondary/80">{post.title}</p>
           <Chip
             className="text-tiny text-secondary/70 bg-black/20"
-            variant="flat"
             color="default"
             radius="lg"
+            variant="flat"
           >
             {format(new Date(post.dateFound), "dd MMMM, yyy")}
           </Chip>
@@ -50,8 +52,8 @@ const RecentPostCard: FC<TRecentPostCardProps> = ({ post }) => {
           <div className="flex flex-grow gap-2 items-center">
             <Avatar
               showFallback
-              name={post.title}
               className="rounded-full w-10 h-10 bg-black bg-cover object-cover"
+              name={post.title}
               src={post.images?.[1] || ""}
               onClick={() => handleImageClick(post.images[1] || "")}
             />
@@ -69,21 +71,21 @@ const RecentPostCard: FC<TRecentPostCardProps> = ({ post }) => {
             </div>
           </div>
           <Button
-            radius="full"
+            className="text-default-50"
             color="secondary"
-            variant="bordered"
+            radius="full"
             size="sm"
-            className="text-default-700"
+            variant="flat"
           >
             Details
           </Button>
         </CardFooter>
       </Card>
       <ImageModal
+        alt={post.title}
+        imageUrl={selectedImage}
         isOpen={isModalOpen}
         onOpenChange={() => setModalOpen(false)}
-        imageUrl={selectedImage}
-        alt={post.title}
       />
     </>
   );

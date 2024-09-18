@@ -1,5 +1,6 @@
-import { FC } from "react";
-import { useForm, FormProvider } from "react-hook-form";
+"use client";
+import { FC, ReactNode } from "react";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 
 interface IFormConfig {
   defaultValues?: Record<string, any>;
@@ -7,8 +8,8 @@ interface IFormConfig {
 }
 
 interface IFXFormProps extends IFormConfig {
-  children: React.ReactNode;
-  onSubmit: () => void;
+  children: ReactNode;
+  onSubmit: SubmitHandler<any>;
 }
 
 const FXForm: FC<IFXFormProps> = ({
@@ -27,12 +28,12 @@ const FXForm: FC<IFXFormProps> = ({
   if (!!resolver) {
     formConfig["resolver"] = resolver;
   }
-  const methods = useForm();
+  const methods = useForm(formConfig);
   const submitHandler = methods.handleSubmit;
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={submitHandler(onSubmit)} action="">
+      <form className="space-y-4" onSubmit={submitHandler(onSubmit)}>
         {children}
       </form>
     </FormProvider>

@@ -1,13 +1,11 @@
 "use client";
 import { Button } from "@nextui-org/button";
-import { useRouter } from "next/navigation";
 import { FC, useEffect, useState } from "react";
-import { FaSignInAlt } from "react-icons/fa";
 
 type TNavButtonProps = {
   label?: string;
-  href: string;
-  icon?: React.ReactNode;
+  endIcon?: React.ReactNode;
+  startIcon?: React.ReactNode;
   variant?:
     | "flat"
     | "solid"
@@ -19,18 +17,19 @@ type TNavButtonProps = {
   color?: string;
   bgColor?: string;
   size?: "sm" | "md" | "lg";
+  onClick?: () => void;
 };
 
 const NavButton: FC<TNavButtonProps> = ({
   label = "Register",
-  href,
-  icon = <FaSignInAlt size={22} className="text-secondary" />, // Default icon
+  endIcon,
+  startIcon,
   variant = "flat",
   color = "text-default-600",
   bgColor = "bg-default-100",
   size,
+  onClick,
 }) => {
-  const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -42,10 +41,11 @@ const NavButton: FC<TNavButtonProps> = ({
   return (
     <Button
       className={`text-sm font-normal ${color} ${bgColor}`}
-      endContent={icon}
-      onClick={() => router.push(href)}
-      variant={variant}
+      endContent={endIcon}
       size={size}
+      startContent={startIcon}
+      variant={variant}
+      onClick={onClick}
     >
       {label}
     </Button>

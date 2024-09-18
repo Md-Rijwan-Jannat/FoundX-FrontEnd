@@ -1,36 +1,37 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { currentUser } from "./services/authService";
+import { TDecodeUser } from "./types";
 
-type TRole = keyof typeof RoleBasedRoutes;
+type TRoleProps = keyof typeof RoleBasedRoutes;
 
 const RoleBasedRoutes = {
-  USER: [/^\/profile$/],
+  USER: [/^\/profile/],
   ADMIN: [/^\/admin/],
 };
 
 const AuthPathname = ["/auth/login", "/auth/register"];
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  // const user = {
-  //   name: "Md Rijwan",
-  //   token: "token",
-  //   role: "USER",
-  // };
+  const user = (await currentUser()) as TDecodeUser | undefined;
 
-  const user = undefined;
+  console.log("user=>", user);
 
   // Handle authentication protected route
   if (!user) {
     if (AuthPathname.includes(pathname)) {
       return NextResponse.next();
     } else {
-      return NextResponse.redirect(new URL("/auth/login", request.url));
+      return NextResponse.redirect(
+        new URL(`/auth/login?redirect=${pathname}`, request.url)
+      );
     }
   }
   // Handle role base route
-  if (user?.role && RoleBasedRoutes[user?.role as TRole]) {
-    const routes = RoleBasedRoutes[user?.role as TRole];
+  if (user?.role && RoleBasedRoutes[user?.role as TRoleProps]) {
+    const routes = RoleBasedRoutes[user?.role as TRoleProps];
+
     if (routes.some((route) => pathname.match(route))) {
       return NextResponse.next();
     }
@@ -41,5 +42,11 @@ export function middleware(request: NextRequest) {
 
 // See "Matching Paths" below to learn more
 export const config = {
-  matcher: ["/profile", "/admin", "/auth/login", "/auth/register"],
+  matcher: [
+    "/profile",
+    "/profile/:page*",
+    "/admin",
+    "/auth/login",
+    "/auth/register",
+  ],
 };

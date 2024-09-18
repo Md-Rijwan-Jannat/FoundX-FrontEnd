@@ -8,6 +8,7 @@ import {
   useDisclosure,
 } from "@nextui-org/modal";
 import { FC, ReactNode, useEffect } from "react";
+
 import { searchInput } from "./searchInput";
 
 type TSearchModalProps = {
@@ -72,7 +73,7 @@ const SearchModal: FC<TSearchModalProps> = ({
   noDataMessage = "No Data",
   classNames = {}, // New classNames prop
 }) => {
-  const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
@@ -95,23 +96,23 @@ const SearchModal: FC<TSearchModalProps> = ({
   return (
     <>
       <Button
+        color={color}
+        endContent={endContent}
         isIconOnly={isIconOnly}
         radius="full"
-        onClick={onOpen}
-        endContent={endContent}
-        color={color}
         variant={variant}
+        onClick={onOpen}
       >
         {text}
       </Button>
 
       <Modal
-        size={modalSize}
-        isOpen={isOpen}
         backdrop={"blur"}
-        placement={modalPlacement}
-        onOpenChange={onOpenChange}
         className={`m-2 mt-16 ${classNames.wrapper || ""}`}
+        isOpen={isOpen}
+        placement={modalPlacement}
+        size={modalSize}
+        onOpenChange={onOpenChange}
       >
         <ModalContent className={classNames.base}>
           <ModalHeader className={`flex flex-col ${classNames.header || ""}`}>

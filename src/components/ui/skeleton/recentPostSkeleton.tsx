@@ -5,6 +5,7 @@ import { CgSearchFound } from "react-icons/cg";
 import { Chip } from "@nextui-org/chip";
 import { Button } from "@nextui-org/button";
 import Link from "next/link";
+
 import SectionTitle from "../sectionTitle";
 
 type TRecentPostSkeletonProps = object;
@@ -14,10 +15,10 @@ const RecentPostSkeleton: FC<TRecentPostSkeletonProps> = () => {
     <div className="my-8">
       {/* Section Title */}
       <SectionTitle
-        title="Recently Found Items"
+        alignment="center"
         subtitle="Explore the most recent items that have been found and reported,
           helping to reunite lost belongings with their owners."
-        alignment="center"
+        title="Recently Found Items"
       />
 
       {/* Chip with Icon */}

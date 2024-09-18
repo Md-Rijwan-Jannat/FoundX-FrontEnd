@@ -1,10 +1,10 @@
 "use client";
 import { FC } from "react";
-import bannerAnimationJSON from "@/src/assets/banner/BannerAnimation.json";
 import { Button } from "@nextui-org/button";
 import Player from "lottie-react";
 import { IoSearch } from "react-icons/io5";
 import SearchModal from "../../ui/navbar/searchModal";
+import bannerAnimationJSON from "@/src/assets/banner/BannerAnimation.json";
 
 type TLandingProps = object;
 
@@ -21,24 +21,24 @@ const Landing: FC<TLandingProps> = () => {
           Welcome to Found X!
         </h1>
         <p className={`text-lg text-center lg:text-start text-default-600`}>
-          Your one-stop solution to post items you've found or report items
-          you've lost. Make it easier for everyone to reunite with their lost
+          Your one-stop solution to post items you have found or report items
+          you have lost. Make it easier for everyone to reunite with their lost
           belongings!
         </p>
         <div className="flex flex-col md:flex-row items-center justify-center gap-3 md:gap-5 mt-5 md:mt-10">
           <SearchModal
+            color="secondary"
+            endContent={<IoSearch className="animate-pulse" size={22} />}
             isIconOnly={false}
             modalSize="4xl"
-            color="secondary"
-            variant="shadow"
-            endContent={<IoSearch className="animate-pulse" size={22} />}
             text="Found your item"
+            variant="shadow"
           />
           <Button
-            color="secondary"
             className="w-[110px] text-default-700"
-            variant="bordered"
+            color="secondary"
             radius="full"
+            variant="bordered"
           >
             Post Item
           </Button>
@@ -51,8 +51,8 @@ const Landing: FC<TLandingProps> = () => {
           autoplay
           loop
           animationData={bannerAnimationJSON}
-          style={{ height: "370px", width: "360px" }}
           className="rounded-lg"
+          style={{ height: "370px", width: "360px" }}
         />
       </div>
     </div>

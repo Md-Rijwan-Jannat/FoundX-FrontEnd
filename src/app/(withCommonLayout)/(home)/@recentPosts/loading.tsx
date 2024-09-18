@@ -1,5 +1,6 @@
-import RecentPostSkeleton from "@/src/components/ui/skeleton/recentPostSkeleton";
 import { FC } from "react";
+
+import RecentPostSkeleton from "@/src/components/ui/skeleton/recentPostSkeleton";
 
 type TLoadingProps = object;
 
