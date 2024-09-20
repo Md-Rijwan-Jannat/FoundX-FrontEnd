@@ -1,4 +1,4 @@
-import LoginForm from "@/src/components/form/loginForm";
+import LoginForm from "@/src/components/form/LoginForm";
 import LoginSkeleton from "@/src/components/ui/skeleton/loginSkeleton";
 import { FC, Suspense } from "react";
 

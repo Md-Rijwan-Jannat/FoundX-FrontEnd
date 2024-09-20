@@ -15,14 +15,16 @@ import NavLink from "./navLink";
 import NavDropdown from "./navDropdown";
 
 import { siteConfig } from "@/src/config/site";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/src/utils/authOptions";
 
-export const Navbar = () => {
+export const Navbar = async () => {
+  const user = await getServerSession(authOptions);
+
+  console.log("Session social user data=>", user);
+
   return (
-    <NextUINavbar
-      shouldHideOnScroll
-      className="h-[5rem] md:h-[4rem]"
-      maxWidth="xl"
-    >
+    <NextUINavbar className="h-[5rem] md:h-[4rem]" maxWidth="xl">
       {/* Left Section: Brand and Links */}
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">

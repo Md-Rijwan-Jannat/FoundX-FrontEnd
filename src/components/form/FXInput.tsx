@@ -21,7 +21,7 @@ type TFXInputProps = {
 const FXInput: FC<TFXInputProps> = ({
   className = "w-full",
   placeholder = "Email",
-  startContent = <FaUserAlt className="text-default-500" />,
+  startContent,
   size = "md",
   type = "text",
   variant = "faded",
@@ -40,6 +40,7 @@ const FXInput: FC<TFXInputProps> = ({
   return (
     <div>
       <Input
+        style={{ width: "100%" }}
         {...register(name)}
         aria-label={name}
         className={className}

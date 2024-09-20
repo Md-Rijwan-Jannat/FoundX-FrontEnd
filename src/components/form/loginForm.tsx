@@ -9,7 +9,6 @@ import { FieldValues, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import Logo from "@/src/components/ui/logo";
-import SocialLogin from "@/src/components/form/SocialLogin";
 import FXInput from "@/src/components/form/FXInput";
 import loginValidationSchema from "@/src/schema/login.schema";
 import { useUserLoginMutation } from "@/src/hooks/auth.hook";
@@ -17,6 +16,7 @@ import envConfig from "@/src/config/envConfig";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUser } from "@/src/context/userProvider";
 import FXForm from "../form/FXForm";
+import { SocialLogin } from "./SocialLogin";
 
 type TLoginFormProps = object;
 

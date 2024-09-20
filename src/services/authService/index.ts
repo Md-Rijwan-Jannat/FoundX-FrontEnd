@@ -10,6 +10,8 @@ export const registerUser = async (userData: FieldValues) => {
   try {
     const { data } = await AxiosInstance.post("/auth/register", userData);
 
+    console.log(data);
+
     if (data.success) {
       cookies().set("accessToken", data.data.accessToken);
       cookies().set("refreshToken", data.data.refreshToken);

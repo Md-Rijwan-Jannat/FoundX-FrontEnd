@@ -9,16 +9,22 @@ import { FieldValues, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import Logo from "@/src/components/ui/logo";
-import SocialLogin from "@/src/components/form/SocialLogin";
 import FXForm from "@/src/components/form/FXForm";
 import FXInput from "@/src/components/form/FXInput";
 import registerValidationSchema from "@/src/schema/register.schema";
 import envConfig from "@/src/config/envConfig";
 import { useRouter, useSearchParams } from "next/navigation";
+import SocialRegister from "./SocialRegister";
 
-type TRegisterFormProps = object;
+export type TSessionProps = {
+  session: {
+    name: string | null | undefined;
+    email: string | null | undefined;
+    image: string | null | undefined;
+  } | null;
+};
 
-const RegisterForm: FC<TRegisterFormProps> = () => {
+const RegisterForm: FC = () => {
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect");
   const router = useRouter();
@@ -114,7 +120,7 @@ const RegisterForm: FC<TRegisterFormProps> = () => {
                 </Button>
               </div>
             </FXForm>
-            <SocialLogin />
+            <SocialRegister />
           </CardBody>
           <CardFooter className="mt-4 flex justify-center">
             <p className="text-sm text-default-500">

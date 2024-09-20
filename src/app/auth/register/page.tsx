@@ -4,7 +4,7 @@ import { FC, Suspense } from "react";
 
 type TRegisterPageProps = object;
 
-const RegisterPage: FC<TRegisterPageProps> = () => {
+const RegisterPage: FC<TRegisterPageProps> = async () => {
   return (
     <Suspense fallback={<RegisterSkeleton />}>
       <RegisterForm />

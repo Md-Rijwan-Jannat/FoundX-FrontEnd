@@ -62,17 +62,13 @@ const NavDropdown: FC<TNavDropdownProps> = () => {
             <DropdownItem onClick={() => handleNavigation("setting")}>
               Setting
             </DropdownItem>
-            <DropdownItem>
-              <div className="w-full flex items-center justify-center">
-                <NavButton
-                  label="Logout"
-                  size="sm"
-                  startIcon={
-                    <FaSignOutAlt className="text-secondary-500" size={20} />
-                  }
-                  onClick={handleLogout}
-                />
-              </div>
+            <DropdownItem
+              startContent={
+                <FaSignOutAlt className="text-secondary-500" size={20} />
+              }
+              onClick={handleLogout}
+            >
+              Logout
             </DropdownItem>
           </DropdownMenu>
         </Dropdown>

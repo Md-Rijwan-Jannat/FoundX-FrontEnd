@@ -28,7 +28,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/app/(withCommonLayout)/(user)/profile/create-post"
+    "src/app/(user)/profile/create-post"
   ],
   "exclude": ["node_modules"]
 }

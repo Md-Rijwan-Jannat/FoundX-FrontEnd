@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { currentUser } from "./services/authService";
 import { TDecodeUser } from "./types";
+import { cookies } from "next/headers";
 
 type TRoleProps = keyof typeof RoleBasedRoutes;
 
@@ -18,8 +19,11 @@ export async function middleware(request: NextRequest) {
 
   console.log("user=>", user);
 
+  const accessToken = cookies().get("accessToken");
+  const refreshToken = cookies().get("refreshToken");
+
   // Handle authentication protected route
-  if (!user) {
+  if (!user && !accessToken && !refreshToken) {
     if (AuthPathname.includes(pathname)) {
       return NextResponse.next();
     } else {
@@ -29,7 +33,12 @@ export async function middleware(request: NextRequest) {
     }
   }
   // Handle role base route
-  if (user?.role && RoleBasedRoutes[user?.role as TRoleProps]) {
+  if (
+    user?.role &&
+    accessToken &&
+    refreshToken &&
+    RoleBasedRoutes[user?.role as TRoleProps]
+  ) {
     const routes = RoleBasedRoutes[user?.role as TRoleProps];
 
     if (routes.some((route) => pathname.match(route))) {
