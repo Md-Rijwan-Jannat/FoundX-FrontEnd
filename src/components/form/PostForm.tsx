@@ -50,9 +50,9 @@ const PostForm: FC<TPostFormProps> = () => {
           onSubmit={handleSubmit(onSubmit)}
         >
           <FXInput name="title" placeholder="Title" type="text" />
-          <FXTextarea name="description" placeholder="Description" rows={3} />
           <FXInput name="location" placeholder="Location" type="text" />
           <FXDateInput name="dateFound" />
+          <FXTextarea name="description" placeholder="Description" rows={3} />
           <Divider className="my-2" />
           <div className="flex justify-between items-center mb-3">
             <h2 className="text-default-600 text-sm">Add Some Questions</h2>

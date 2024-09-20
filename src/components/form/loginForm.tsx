@@ -16,7 +16,7 @@ import envConfig from "@/src/config/envConfig";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUser } from "@/src/context/userProvider";
 import FXForm from "../form/FXForm";
-import { SocialLogin } from "./SocialLogin";
+import SocialLogin from "./SocialLogin";
 
 type TLoginFormProps = object;
 
@@ -60,7 +60,7 @@ const LoginForm: FC<TLoginFormProps> = () => {
         <CardBody>
           <FXForm
             defaultValues={{
-              email: "rijwanjannat@gmail.com",
+              email: "tanmoyparvez@gmail.com",
               password: "123456",
             }}
             resolver={zodResolver(loginValidationSchema)}

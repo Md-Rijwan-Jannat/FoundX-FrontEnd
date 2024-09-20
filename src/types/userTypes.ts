@@ -25,7 +25,7 @@ export type TDecodeUser = {
   name: string;
   email: string;
   mobileNumber: string;
-  profilePhoto: string;
+  profilePhoto?: string;
   role: TRole;
   status: string;
   iat: number;

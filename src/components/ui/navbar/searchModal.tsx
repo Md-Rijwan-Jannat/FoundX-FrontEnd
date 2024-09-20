@@ -67,7 +67,7 @@ const SearchModal: FC<TSearchModalProps> = ({
   variant = "flat",
   color = "secondary",
   endContent,
-  modalSize = "lg",
+  modalSize = "md",
   modalPlacement = "top",
   modalContent,
   noDataMessage = "No Data",

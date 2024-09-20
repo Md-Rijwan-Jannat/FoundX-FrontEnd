@@ -1,111 +1,126 @@
 "use client";
 
-import { signIn, getSession } from "next-auth/react";
+import { signIn, useSession, signOut } from "next-auth/react";
 import { Button } from "@nextui-org/button";
 import { toast } from "sonner";
 import { FaFacebookF, FaGithub } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
-import Cookies from "js-cookie";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useUser } from "@/src/context/userProvider";
 import AxiosInstance from "@/src/lib/AxiosInstance/axiosInstance";
+import Cookies from "js-cookie";
+import envConfig from "@/src/config/envConfig";
 
-// Function to check if the user already exists
-const checkUserExists = async (email: string) => {
-  try {
-    const response = await AxiosInstance.get(
-      `/auth/user-exists?email=${email}`
-    );
-    return response.data.exists;
-  } catch (error) {
-    console.error("Error checking user existence:", error);
-    return false;
-  }
+type TSocialUserLogin = {
+  email: string;
+  password: string;
 };
 
-// Function to log in user
-const loginUser = async (email: string) => {
-  try {
-    const { data } = await AxiosInstance.post("/auth/login", { email });
+interface TUserExistsResponse {
+  success: boolean;
+  data: { exists: boolean };
+  message: string;
+}
 
-    if (data.success) {
-      Cookies.set("accessToken", data.data.accessToken);
-      Cookies.set("refreshToken", data.data.refreshToken);
-      toast.success("Login successful!");
-    }
+interface TLoginResponse {
+  success: boolean;
+  data: {
+    accessToken: string;
+    refreshToken: string;
+  };
+}
 
-    return data;
-  } catch (error: any) {
-    toast.error("Login failed. Please try again.");
-    throw new Error(error);
-  }
-};
+const SocialLogin = () => {
+  const { data: currentSession } = useSession();
+  const [isRegistering, setIsRegistering] = useState(false);
+  const router = useRouter();
+  const { setUser } = useUser();
 
-export const SocialLogin = () => {
-  // Function to handle social sign-in
-  const handleSocialSignIn = async (
-    provider: "google" | "facebook" | "github"
-  ) => {
-    await signIn(provider, {
-      callbackUrl: `${window.location.origin}`,
-    });
+  const handleUserLogin = async (userData: TSocialUserLogin) => {
+    try {
+      const { data: userExists }: { data: TUserExistsResponse } =
+        await AxiosInstance.get(`/auth/user-exists?email=${userData.email}`);
 
-    const updatedSession = await getSession();
+      if (userExists?.data?.exists) {
+        toast.error("User already exists. Please log in.");
+        // signOut();
 
-    if (updatedSession) {
-      const { email } = updatedSession.user || {};
-
-      // Case: If no email is returned, handle it (e.g., Facebook)
-      if (!email) {
-        toast.error("No email provided by provider.");
         return;
-      }
-
-      // Check if the user exists
-      const userExists = await checkUserExists(email);
-
-      if (userExists) {
-        // Log in if the user exists
-        await loginUser(email);
       } else {
-        // Show a message asking the user to register first
-        toast.error("User not found. Please register first.");
+        toast.error(userExists?.message);
       }
-    } else {
-      toast.error("Failed to retrieve session after sign-in.");
+
+      const { data }: { data: TLoginResponse } = await AxiosInstance.post(
+        "/auth/login",
+        userData
+      );
+
+      if (data.success) {
+        Cookies.set("accessToken", data.data.accessToken);
+        Cookies.set("refreshToken", data.data.refreshToken);
+        toast.success("Login successful!");
+
+        const { name, email, image } = currentSession?.user || {};
+
+        setUser({
+          _id: "",
+          name: name || "",
+          email: email || "",
+          mobileNumber: envConfig.social_user_mobile_number as string,
+          profilePhoto: image || "",
+          role: "USER",
+          status: "active",
+          iat: 0,
+          exp: 0,
+        });
+
+        router.push("/");
+      }
+    } catch (error) {
+      toast.error("An error occurred during login. Please try again.");
+      signOut();
     }
   };
 
-  return (
-    <div className="flex flex-col gap-4 mt-10 items-center">
-      <div className="flex flex-col md:flex-row items-center gap-3 justify-between w-full">
-        {/* Google Sign In */}
-        <Button
-          className="w-full"
-          color="default"
-          radius="full"
-          size="md"
-          startContent={<FcGoogle size={20} />}
-          variant="solid"
-          onClick={() => handleSocialSignIn("google")}
-        >
-          Sign in with Google
-        </Button>
+  const handleSocialSignIn = async (provider: "google" | "github") => {
+    await signIn(provider);
+  };
 
-        {/* Facebook Sign In */}
-        <Button
-          className="w-full"
-          color="primary"
-          radius="full"
-          size="md"
-          startContent={<FaFacebookF size={20} />}
-          variant="solid"
-          onClick={() => handleSocialSignIn("facebook")}
-        >
-          Sign in with Facebook
-        </Button>
-      </div>
-      {/* GitHub Sign In */}
+  useEffect(() => {
+    const loginSocialUser = async () => {
+      if (currentSession && currentSession.user && !isRegistering) {
+        setIsRegistering(true);
+        const { email } = currentSession.user;
+
+        const userLoginData: TSocialUserLogin = {
+          email: email as string,
+          password: envConfig.social_user_password as string,
+        };
+
+        await handleUserLogin(userLoginData);
+      }
+    };
+
+    loginSocialUser();
+  }, [currentSession, isRegistering]);
+
+  return (
+    <div className="flex flex-col md:flex-row items-center gap-3 justify-between w-full mt-5">
       <Button
-        className="w-full md:w-1/2"
+        className="w-full"
+        color="default"
+        radius="full"
+        size="md"
+        startContent={<FcGoogle size={20} />}
+        variant="solid"
+        onClick={() => handleSocialSignIn("google")}
+      >
+        Sign in with Google
+      </Button>
+
+      <Button
+        className="w-full"
         color="default"
         radius="full"
         size="md"
@@ -118,3 +133,5 @@ export const SocialLogin = () => {
     </div>
   );
 };
+
+export default SocialLogin;

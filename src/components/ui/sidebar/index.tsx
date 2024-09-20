@@ -9,12 +9,15 @@ import { userLink } from "./constants";
 import { Button } from "@nextui-org/button";
 import { logout } from "@/src/services/authService";
 import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
 
 const Sidebar: FC = () => {
-  const { user, setIsLoading, isLoading } = useUser();
+  const { user, setIsLoading, isLoading, setUser } = useUser();
   const router = useRouter();
-  const handleLogout = () => {
+  const handleLogout = async () => {
     logout();
+    await signOut();
+    setUser(null);
     setIsLoading(true);
     router.push("/");
   };
@@ -25,8 +28,7 @@ const Sidebar: FC = () => {
       <div className="bg-default-50 rounded-md p-2 max-h-fit">
         <div className="flex flex-col items-center justify-center gap-3">
           <Avatar
-            className="cursor-pointer text-secondary text-xl"
-            isDisabled={isLoading}
+            className="cursor-pointer text-secondary text-[24px] font-bold"
             name={user?.name.slice(0, 1)}
             size="lg"
             src={

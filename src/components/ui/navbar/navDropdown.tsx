@@ -14,20 +14,25 @@ import { logout } from "@/src/services/authService";
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
 import { useUser } from "@/src/context/userProvider";
 import envConfig from "@/src/config/envConfig";
+import { signOut } from "next-auth/react";
 
 type TNavDropdownProps = object;
 
 const NavDropdown: FC<TNavDropdownProps> = () => {
-  const { user, setIsLoading } = useUser();
+  const { user, setIsLoading, setUser } = useUser();
   const router = useRouter();
+
+  console.log("user=>", user);
 
   const handleNavigation = (pathname: string) => {
     router.push(`/profile/${pathname}`);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     logout();
+    await signOut();
     setIsLoading(true);
+    setUser(null);
   };
 
   return (
@@ -36,13 +41,12 @@ const NavDropdown: FC<TNavDropdownProps> = () => {
         <Dropdown className="">
           <DropdownTrigger>
             <Avatar
-              className="cursor-pointer text-secondary text-xl"
+              className="cursor-pointer text-secondary text-[24px] font-bold"
               name={user?.name.slice(0, 1)}
               src={
-                (envConfig?.default_image as string) ===
-                (user?.profilePhoto as string)
+                user?.profilePhoto === envConfig?.default_image
                   ? ""
-                  : (user?.profilePhoto as string)
+                  : user?.profilePhoto
               }
             />
           </DropdownTrigger>

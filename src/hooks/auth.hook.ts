@@ -12,7 +12,7 @@ export const useUserRegistrationMutation = () => {
       toast.success("Your registration was successful", { duration: 2000 });
     },
     onError: () => {
-      toast.error("Registration failed. Please try again.");
+      toast.error("This user already exists, Please login");
     },
   });
 };
@@ -25,7 +25,7 @@ export const useUserLoginMutation = () => {
       toast.success("Login successful", { duration: 2000 });
     },
     onError: () => {
-      toast.error("Login failed. Please try again.");
+      toast.error("Invalid credentials");
     },
   });
 };

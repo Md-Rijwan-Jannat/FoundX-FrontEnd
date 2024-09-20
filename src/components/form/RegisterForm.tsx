@@ -15,6 +15,7 @@ import registerValidationSchema from "@/src/schema/register.schema";
 import envConfig from "@/src/config/envConfig";
 import { useRouter, useSearchParams } from "next/navigation";
 import SocialRegister from "./SocialRegister";
+import { useUser } from "@/src/context/userProvider";
 
 export type TSessionProps = {
   session: {
@@ -25,6 +26,7 @@ export type TSessionProps = {
 };
 
 const RegisterForm: FC = () => {
+  const { setIsLoading: userLoading } = useUser();
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect");
   const router = useRouter();
@@ -42,6 +44,7 @@ const RegisterForm: FC = () => {
     };
 
     UserRegistrationFn(registrationData);
+    userLoading(true);
   };
 
   if (!isPending && isSuccess) {

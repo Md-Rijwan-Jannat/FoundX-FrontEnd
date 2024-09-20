@@ -10,6 +10,7 @@ type TFXDateInputProps = {
   name: string;
   defaultValue?: CalendarDate;
   isRequired?: boolean;
+  variant?: "faded" | "flat" | "bordered" | "underlined" | undefined;
 };
 
 const FXDateInput: FC<TFXDateInputProps> = ({
@@ -17,6 +18,7 @@ const FXDateInput: FC<TFXDateInputProps> = ({
   name,
   defaultValue,
   isRequired: required = false,
+  variant = "faded",
 }) => {
   const {
     register,
@@ -36,7 +38,8 @@ const FXDateInput: FC<TFXDateInputProps> = ({
         isInvalid={!!errors?.[name]}
         isRequired={required}
         placeholderValue={defaultValue}
-        onChange={(value) => setValue(name, value)} // Correctly handle onChange
+        variant={variant}
+        onChange={(value) => setValue(name, value)}
       />
     </div>
   );

@@ -1,122 +1,130 @@
-"use client";
-
-import { signIn, signOut } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { Button } from "@nextui-org/button";
 import { toast } from "sonner";
 import { FcGoogle } from "react-icons/fc";
-import { FaFacebookF, FaGithub } from "react-icons/fa";
+import { FaGithub } from "react-icons/fa";
 import AxiosInstance from "@/src/lib/AxiosInstance/axiosInstance";
 import envConfig from "@/src/config/envConfig";
 import Cookies from "js-cookie";
 import { FC, useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useUser } from "@/src/context/userProvider";
+
+type TSocialUser = {
+  name: string;
+  email: string;
+  password: string;
+  mobileNumber: string;
+  profilePhoto: string;
+};
+
+interface UserExistsResponse {
+  success: boolean;
+  data: { exists: boolean };
+  message: string;
+}
+
+interface RegisterResponse {
+  success: boolean;
+  data: {
+    accessToken: string;
+    refreshToken: string;
+  };
+}
 
 export const SocialRegister: FC = () => {
   const { data: currentSession } = useSession();
   const [isRegistering, setIsRegistering] = useState(false);
   const router = useRouter();
+  const { setUser } = useUser();
 
-  // Function to handle user registration
-  const handleUserRegister = async (userData: any) => {
+  const handleUserRegister = async (userData: TSocialUser) => {
     try {
-      // Check if the user already exists
-      const { data: userExists } = await AxiosInstance.get(
-        `/auth/user-exists?email=${userData?.email}`
-      );
+      const { data: userExists }: { data: UserExistsResponse } =
+        await AxiosInstance.get(`/auth/user-exists?email=${userData.email}`);
 
-      if (userExists.exists) {
+      if (userExists?.data?.exists) {
         toast.error("User already exists. Please log in.");
         signOut();
 
         return;
+      } else {
+        toast.error("Facebook can't provide email, choose another way");
       }
 
-      // Register the user if they do not exist
-      const { data } = await AxiosInstance.post("/auth/register", userData);
+      const { data }: { data: RegisterResponse } = await AxiosInstance.post(
+        "/auth/register",
+        userData
+      );
 
       if (data.success) {
         Cookies.set("accessToken", data.data.accessToken);
         Cookies.set("refreshToken", data.data.refreshToken);
         toast.success("Registration successful!");
 
+        setUser({
+          _id: "",
+          name: userData.name,
+          email: userData.email,
+          mobileNumber: userData.mobileNumber,
+          profilePhoto: userData.profilePhoto,
+          role: "USER",
+          status: "active",
+          iat: 0,
+          exp: 0,
+        });
+
         router.push("/");
       }
-
-      return data;
-    } catch (error: any) {
-      toast.error("User already exists. Please log in.");
+    } catch (error) {
+      toast.error("An error occurred during register. Please try again.");
       signOut();
     }
   };
 
-  // Function to handle social sign-in
-  const handleSocialSignIn = async (
-    provider: "google" | "facebook" | "github"
-  ) => {
+  const handleSocialSignIn = async (provider: "google" | "github") => {
     if (!currentSession) {
-      // Initiate sign-in with NextAuth
       await signIn(provider);
     }
   };
 
-  // Trigger user registration if session is available and user is not yet registered
   useEffect(() => {
     const registerSocialUser = async () => {
       if (currentSession && currentSession.user && !isRegistering) {
         setIsRegistering(true);
         const { name, email, image } = currentSession.user;
 
-        // Prepare the registration data
-        const registrationData = {
-          name,
-          email,
-          password: envConfig.social_user_password,
-          mobileNumber: envConfig.social_user_mobile_number,
-          profilePhoto: image || envConfig.default_image,
+        const registrationData: TSocialUser = {
+          name: name as string,
+          email: email as string,
+          password: envConfig.social_user_password as string,
+          mobileNumber: envConfig.social_user_mobile_number as string,
+          profilePhoto: image as string,
         };
 
         await handleUserRegister(registrationData);
       }
     };
 
-    if (currentSession && !isRegistering) {
-      registerSocialUser();
-    }
+    registerSocialUser();
   }, [currentSession, isRegistering]);
 
   return (
-    <div className="flex flex-col gap-4 mt-10 items-center">
-      <div className="flex flex-col md:flex-row items-center gap-3 justify-between w-full">
-        {/* Google Sign In */}
-        <Button
-          className="w-full"
-          color="default"
-          radius="full"
-          size="md"
-          startContent={<FcGoogle size={20} />}
-          variant="solid"
-          onClick={() => handleSocialSignIn("google")}
-        >
-          Sign in with Google
-        </Button>
-
-        {/* Facebook Sign In */}
-        <Button
-          className="w-full"
-          color="primary"
-          radius="full"
-          size="md"
-          startContent={<FaFacebookF size={20} />}
-          variant="solid"
-          onClick={() => handleSocialSignIn("facebook")}
-        >
-          Sign in with Facebook
-        </Button>
-      </div>
-      {/* GitHub Sign In */}
+    <div className="flex flex-col md:flex-row items-center gap-3 justify-between w-full mt-5">
       <Button
-        className="w-full md:w-1/2"
+        className="w-full"
+        color="default"
+        radius="full"
+        size="md"
+        startContent={<FcGoogle size={20} />}
+        variant="solid"
+        onClick={() => handleSocialSignIn("google")}
+      >
+        Sign up with Google
+      </Button>
+
+      <Button
+        className="w-full"
         color="default"
         radius="full"
         size="md"
@@ -124,7 +132,7 @@ export const SocialRegister: FC = () => {
         variant="faded"
         onClick={() => handleSocialSignIn("github")}
       >
-        Sign in with GitHub
+        Sign up with GitHub
       </Button>
     </div>
   );

@@ -30,7 +30,7 @@ const Landing: FC<TLandingProps> = () => {
             color="secondary"
             endContent={<IoSearch className="animate-pulse" size={22} />}
             isIconOnly={false}
-            modalSize="4xl"
+            modalSize="lg"
             text="Found your item"
             variant="shadow"
           />

@@ -1,3 +1,5 @@
+"use client";
+
 import {
   createContext,
   Dispatch,
@@ -14,25 +16,25 @@ import { currentUser } from "../services/authService";
 type TUserProviderProps = {
   children: ReactNode;
 };
-type TUserContextProps =
-  | {
-      user: TDecodeUser | null | undefined;
-      setUser: (user: TDecodeUser | null | undefined) => void;
-      isLoading: boolean;
-      setIsLoading: Dispatch<SetStateAction<boolean>>;
-    }
-  | undefined;
 
-const UserContext = createContext<TUserContextProps>(undefined);
+type TUserContextProps = {
+  user: TDecodeUser | null;
+  setUser: Dispatch<SetStateAction<TDecodeUser | null>>;
+  isLoading: boolean;
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
+};
+
+const UserContext = createContext<TUserContextProps | undefined>(undefined);
 
 const UserProvider: FC<TUserProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<TDecodeUser | null | undefined>();
+  const [user, setUser] = useState<TDecodeUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const handleUser = async () => {
-    const user = (await currentUser()) as TDecodeUser;
+    const fetchedUser = (await currentUser()) as TDecodeUser;
 
-    setUser(user);
+    setUser(fetchedUser);
+
     setIsLoading(false);
   };
 
@@ -50,8 +52,8 @@ const UserProvider: FC<TUserProviderProps> = ({ children }) => {
 export const useUser = () => {
   const context = useContext(UserContext);
 
-  if (context === undefined) {
-    throw new Error("useUser use must be using before userContext provider");
+  if (!context) {
+    throw new Error("useUser must be used within a UserProvider");
   }
 
   return context;
