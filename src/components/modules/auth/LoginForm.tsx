@@ -15,8 +15,8 @@ import { useUserLoginMutation } from "@/src/hooks/auth.hook";
 import envConfig from "@/src/config/envConfig";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUser } from "@/src/context/userProvider";
-import FXForm from "../form/FXForm";
 import SocialLogin from "./SocialLogin";
+import FXForm from "../../form/FXForm";
 
 type TLoginFormProps = object;
 
@@ -69,12 +69,14 @@ const LoginForm: FC<TLoginFormProps> = () => {
             <FXInput
               name="email"
               placeholder="Email"
+              size="md"
               startContent={<FaUserAlt className="text-default-500" />}
               type="email"
             />
             <FXInput
               name="password"
               placeholder="Password"
+              size="md"
               startContent={<FaLock className="text-default-500" />}
               type="password"
             />

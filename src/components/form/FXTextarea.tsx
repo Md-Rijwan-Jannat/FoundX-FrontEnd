@@ -1,27 +1,22 @@
 "use client";
 
+import { TInput } from "@/src/types";
 import { Textarea } from "@nextui-org/input";
 import { FC } from "react";
 import { useFormContext } from "react-hook-form";
 
-type TFXTextareaProps = {
-  className?: string;
-  placeholder: string;
-  size?: "lg" | "sm" | "md";
-  name: string;
-  defaultValue?: string;
-  isRequired?: boolean;
+interface TFXTextareaProps extends Omit<TInput, "rows"> {
   rows?: number;
-};
+}
 
 const FXTextarea: FC<TFXTextareaProps> = ({
   className,
-  placeholder,
-  size = "md",
+  label,
+  size = "sm",
   name,
   defaultValue = "",
   isRequired: required = false,
-  rows = 3,
+  rows,
 }) => {
   const {
     register,
@@ -38,8 +33,8 @@ const FXTextarea: FC<TFXTextareaProps> = ({
         errorMessage={errors?.[name] && (errors?.[name]?.message as string)}
         isInvalid={!!errors?.[name]}
         isRequired={required}
-        placeholder={placeholder}
-        rows={rows}
+        label={label}
+        minRows={rows}
         size={size}
         variant="faded"
       />

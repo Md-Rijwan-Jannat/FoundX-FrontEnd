@@ -1,12 +1,16 @@
-import { FC } from "react";
+import Profile from "@/src/components/modules/userProfile/Profile";
+import { GetAllMyPosts } from "@/src/services/Post";
+import { FC, Suspense } from "react";
 
 type TUserDashboardProps = object;
 
-const UserDashboard: FC<TUserDashboardProps> = () => {
+const UserDashboard: FC<TUserDashboardProps> = async () => {
+  const { data: myPosts } = await GetAllMyPosts();
+
   return (
-    <div>
-      <h2>This is a UserDashboard component</h2>
-    </div>
+    <Suspense fallback={<p>loading ...</p>}>
+      <Profile myPosts={myPosts} />
+    </Suspense>
   );
 };
 

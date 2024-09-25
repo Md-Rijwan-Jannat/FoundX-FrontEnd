@@ -1,6 +1,6 @@
 "use client";
 
-import RegisterForm from "@/src/components/form/RegisterForm";
+import RegisterForm from "@/src/components/modules/auth/RegisterForm";
 import RegisterSkeleton from "@/src/components/ui/skeleton/registerSkeleton";
 import { FC, Suspense } from "react";
 

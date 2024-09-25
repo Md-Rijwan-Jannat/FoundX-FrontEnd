@@ -15,14 +15,8 @@ import NavLink from "./navLink";
 import NavDropdown from "./navDropdown";
 
 import { siteConfig } from "@/src/config/site";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/src/utils/authOptions";
 
-export const Navbar = async () => {
-  const user = await getServerSession(authOptions);
-
-  console.log("Session social user data=>", user);
-
+export const Navbar = () => {
   return (
     <NextUINavbar className="h-[5rem] md:h-[4rem]" maxWidth="xl">
       {/* Left Section: Brand and Links */}
@@ -64,7 +58,7 @@ export const Navbar = async () => {
           <NavDropdown />
         </NavbarItem>
         <NavbarItem>
-          <NavbarMenuToggle className="text-secondary" />
+          <NavbarMenuToggle className="text-secondary cursor-pointer" />
         </NavbarItem>
       </NavbarContent>
 

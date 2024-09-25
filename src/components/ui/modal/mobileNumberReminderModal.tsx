@@ -31,7 +31,7 @@ const MobileNumberReminder: FC<TMobileNumberReminderProps> = () => {
 
     const interval = setInterval(() => {
       checkUserMobileNumber();
-    }, 60000);
+    }, 600000);
 
     return () => clearInterval(interval);
   }, [user, onOpen]);

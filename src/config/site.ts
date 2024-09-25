@@ -10,7 +10,7 @@ export const siteConfig = {
     },
     {
       label: "Found Item",
-      href: "/found-item",
+      href: "/found-items",
     },
     {
       label: "About",

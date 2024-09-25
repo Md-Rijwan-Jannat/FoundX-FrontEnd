@@ -1,18 +1,20 @@
-"use client";
 import { toast } from "sonner";
 import { FieldValues } from "react-hook-form";
-import { loginUser, registerUser } from "../services/authService";
+import {
+  loginUser as LoginUser,
+  registerUser as RegisterUser,
+} from "../services/Auth";
 import { useMutation } from "@tanstack/react-query";
 
 export const useUserRegistrationMutation = () => {
   return useMutation<any, Error, FieldValues>({
     mutationKey: ["USER_REGISTER"],
-    mutationFn: async (userData) => await registerUser(userData),
+    mutationFn: async (userData) => await RegisterUser(userData),
     onSuccess: () => {
       toast.success("Your registration was successful", { duration: 2000 });
     },
-    onError: () => {
-      toast.error("This user already exists, Please login");
+    onError: (error) => {
+      toast.error(error.message);
     },
   });
 };
@@ -20,12 +22,12 @@ export const useUserRegistrationMutation = () => {
 export const useUserLoginMutation = () => {
   return useMutation<any, Error, FieldValues>({
     mutationKey: ["USER_REGISTER"],
-    mutationFn: async (userData) => await loginUser(userData),
+    mutationFn: async (userData) => await LoginUser(userData),
     onSuccess: () => {
       toast.success("Login successful", { duration: 2000 });
     },
-    onError: () => {
-      toast.error("Invalid credentials");
+    onError: (error) => {
+      toast.error(error.message);
     },
   });
 };

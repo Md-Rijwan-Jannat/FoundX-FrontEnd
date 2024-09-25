@@ -3,12 +3,12 @@ import { CgSearchFound } from "react-icons/cg";
 import { Button } from "@nextui-org/button";
 import Link from "next/link";
 
-import { AllRecentPosts } from "@/src/services/recentPostService";
 import RecentPostCard from "@/src/components/ui/cards/recentPostCard";
 import SectionTitle from "@/src/components/ui/sectionTitle";
+import { GetAllRecentPosts } from "@/src/services/Post";
 
 const RecentPosts = async () => {
-  const { data: posts } = await AllRecentPosts();
+  const { data: posts } = await GetAllRecentPosts();
 
   if (!posts.length) {
     return (
@@ -41,7 +41,7 @@ const RecentPosts = async () => {
 
       <div className="my-8 flex items-center justify-center w-full">
         <Button color="secondary" variant="flat">
-          <Link href={"found-item"}>See More</Link>
+          <Link href={"found-items"}>See More</Link>
         </Button>
       </div>
     </div>

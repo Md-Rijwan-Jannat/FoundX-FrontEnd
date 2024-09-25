@@ -5,12 +5,11 @@ import { FieldValues } from "react-hook-form";
 import { jwtDecode } from "jwt-decode";
 
 import AxiosInstance from "@/src/lib/AxiosInstance/axiosInstance";
+import { signOut } from "next-auth/react";
 
 export const registerUser = async (userData: FieldValues) => {
   try {
     const { data } = await AxiosInstance.post("/auth/register", userData);
-
-    console.log(data);
 
     if (data.success) {
       cookies().set("accessToken", data.data.accessToken);

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { currentUser } from "./services/authService";
+import { currentUser } from "./services/Auth";
 import { TDecodeUser } from "./types";
 import { cookies } from "next/headers";
 
@@ -24,15 +24,17 @@ export async function middleware(request: NextRequest) {
 
   // Handle authentication protected route
   if (!user && !accessToken && !refreshToken) {
-    if (AuthPathname.includes(pathname)) {
-      return NextResponse.next();
-    } else {
+    const isAuthPage = AuthPathname.includes(pathname);
+
+    if (!isAuthPage) {
       return NextResponse.redirect(
         new URL(`/auth/login?redirect=${pathname}`, request.url)
       );
     }
+
+    return NextResponse.next();
   }
-  // Handle role base route
+
   if (
     user?.role &&
     accessToken &&
@@ -49,7 +51,6 @@ export async function middleware(request: NextRequest) {
   return NextResponse.redirect(new URL("/", request.url));
 }
 
-// See "Matching Paths" below to learn more
 export const config = {
   matcher: [
     "/profile",

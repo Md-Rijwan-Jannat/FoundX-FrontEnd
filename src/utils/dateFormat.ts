@@ -3,8 +3,10 @@ export function formatCalendarDate(calendarDate: {
   month: any;
   day: any;
 }) {
-  const { year, month, day } = calendarDate;
-  const date = new Date(Date.UTC(year, month - 1, day));
+  if (calendarDate) {
+    const { year, month, day } = calendarDate;
+    const date = new Date(Date.UTC(year, month - 1, day)).toISOString();
 
-  return date.toISOString();
+    return date;
+  }
 }

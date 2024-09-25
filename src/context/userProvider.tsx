@@ -1,5 +1,3 @@
-"use client";
-
 import {
   createContext,
   Dispatch,
@@ -11,7 +9,7 @@ import {
   useState,
 } from "react";
 import { TDecodeUser } from "../types";
-import { currentUser } from "../services/authService";
+import { currentUser } from "../services/Auth";
 
 type TUserProviderProps = {
   children: ReactNode;

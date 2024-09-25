@@ -20,7 +20,7 @@ const SidebarOptions: FC<TSidebarOptionsProps> = ({ sidebarLinks }) => {
   const getLinkClasses = (href: string) => {
     const isActive = pathname === href;
     const baseClasses =
-      "px-3 py-1 rounded-md text-[10px] w-full transition-colors duration-250";
+      "px-3 py-2 rounded-md text-[10px] w-full transition-colors duration-250";
 
     const textColor =
       theme === "dark" ? "text-default-600" : "text-default-100";

@@ -3,12 +3,12 @@ import { Button } from "@nextui-org/button";
 import { toast } from "sonner";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
-import AxiosInstance from "@/src/lib/AxiosInstance/axiosInstance";
 import envConfig from "@/src/config/envConfig";
 import Cookies from "js-cookie";
 import { FC, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useUser } from "@/src/context/userProvider";
+import AxiosInstanceClient from "@/src/lib/AxiosInstance/clientAxiosInstance";
 
 type TSocialUser = {
   name: string;
@@ -18,7 +18,7 @@ type TSocialUser = {
   profilePhoto: string;
 };
 
-interface UserExistsResponse {
+interface TUserExistsResponse {
   success: boolean;
   data: { exists: boolean };
   message: string;
@@ -35,49 +35,23 @@ interface RegisterResponse {
 export const SocialRegister: FC = () => {
   const { data: currentSession } = useSession();
   const [isRegistering, setIsRegistering] = useState(false);
+  const { setIsLoading: userLoading } = useUser();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect");
   const router = useRouter();
-  const { setUser } = useUser();
 
   const handleUserRegister = async (userData: TSocialUser) => {
     try {
-      const { data: userExists }: { data: UserExistsResponse } =
-        await AxiosInstance.get(`/auth/user-exists?email=${userData.email}`);
-
-      if (userExists?.data?.exists) {
-        toast.error("User already exists. Please log in.");
-        signOut();
-
-        return;
-      } else {
-        toast.error("Facebook can't provide email, choose another way");
-      }
-
-      const { data }: { data: RegisterResponse } = await AxiosInstance.post(
-        "/auth/register",
-        userData
-      );
+      const { data }: { data: RegisterResponse } =
+        await AxiosInstanceClient.post("/auth/register", userData);
 
       if (data.success) {
         Cookies.set("accessToken", data.data.accessToken);
         Cookies.set("refreshToken", data.data.refreshToken);
         toast.success("Registration successful!");
-
-        setUser({
-          _id: "",
-          name: userData.name,
-          email: userData.email,
-          mobileNumber: userData.mobileNumber,
-          profilePhoto: userData.profilePhoto,
-          role: "USER",
-          status: "active",
-          iat: 0,
-          exp: 0,
-        });
-
-        router.push("/");
+        router.push(redirect ? redirect : "/");
       }
     } catch (error) {
-      toast.error("An error occurred during register. Please try again.");
       signOut();
     }
   };
@@ -94,15 +68,28 @@ export const SocialRegister: FC = () => {
         setIsRegistering(true);
         const { name, email, image } = currentSession.user;
 
-        const registrationData: TSocialUser = {
-          name: name as string,
-          email: email as string,
-          password: envConfig.social_user_password as string,
-          mobileNumber: envConfig.social_user_mobile_number as string,
-          profilePhoto: image as string,
-        };
+        try {
+          const { data: userExists }: { data: TUserExistsResponse } =
+            await AxiosInstanceClient.get(`/auth/user-exists?email=${email}`);
 
-        await handleUserRegister(registrationData);
+          if (!userExists?.data?.exists) {
+            const registrationData: TSocialUser = {
+              name: name as string,
+              email: email as string,
+              password: envConfig.social_user_password as string,
+              mobileNumber: envConfig.social_user_mobile_number as string,
+              profilePhoto: image as string,
+            };
+
+            await handleUserRegister(registrationData);
+            userLoading(true);
+          } else {
+            toast.error("Your already register. Please login");
+            await signOut();
+          }
+        } catch (error) {
+          await signOut();
+        }
       }
     };
 

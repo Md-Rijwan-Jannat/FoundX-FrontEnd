@@ -85,6 +85,7 @@ const RegisterForm: FC = () => {
                 isRequired={true}
                 name="name"
                 placeholder="Name"
+                size="md"
                 startContent={<FaUserAlt className="text-default-500" />}
                 type="text"
               />
@@ -92,6 +93,7 @@ const RegisterForm: FC = () => {
                 isRequired={true}
                 name="email"
                 placeholder="Email"
+                size="md"
                 startContent={<FaEnvelope className="text-default-500" />}
                 type="email"
               />
@@ -99,6 +101,7 @@ const RegisterForm: FC = () => {
                 isRequired={true}
                 name="password"
                 placeholder="Password"
+                size="md"
                 startContent={<FaLock className="text-default-500" />}
                 type="password"
               />
@@ -106,6 +109,7 @@ const RegisterForm: FC = () => {
                 isRequired={true}
                 name="mobileNumber"
                 placeholder="Mobile Number"
+                size="md"
                 startContent={<FaPhoneAlt className="text-default-500" />}
                 type="tel"
               />

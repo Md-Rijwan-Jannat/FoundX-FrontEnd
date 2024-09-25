@@ -63,7 +63,7 @@ const RecentPostSkeleton: FC<TRecentPostSkeletonProps> = () => {
       {/* See More Button */}
       <div className="flex items-center justify-center w-full mt-24">
         <Button color="secondary" variant="flat">
-          <Link href={"found-item"}>See More</Link>
+          <Link href={"found-items"}>See More</Link>
         </Button>
       </div>
     </div>

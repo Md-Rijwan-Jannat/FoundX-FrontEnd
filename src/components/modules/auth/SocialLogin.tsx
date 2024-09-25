@@ -3,14 +3,14 @@
 import { signIn, useSession, signOut } from "next-auth/react";
 import { Button } from "@nextui-org/button";
 import { toast } from "sonner";
-import { FaFacebookF, FaGithub } from "react-icons/fa";
+import { FaGithub } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useUser } from "@/src/context/userProvider";
-import AxiosInstance from "@/src/lib/AxiosInstance/axiosInstance";
 import Cookies from "js-cookie";
 import envConfig from "@/src/config/envConfig";
+import AxiosInstanceClient from "@/src/lib/AxiosInstance/clientAxiosInstance";
 
 type TSocialUserLogin = {
   email: string;
@@ -34,24 +34,14 @@ interface TLoginResponse {
 const SocialLogin = () => {
   const { data: currentSession } = useSession();
   const [isRegistering, setIsRegistering] = useState(false);
+  const { setIsLoading: userLoading } = useUser();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect");
   const router = useRouter();
-  const { setUser } = useUser();
 
   const handleUserLogin = async (userData: TSocialUserLogin) => {
     try {
-      const { data: userExists }: { data: TUserExistsResponse } =
-        await AxiosInstance.get(`/auth/user-exists?email=${userData.email}`);
-
-      if (userExists?.data?.exists) {
-        toast.error("User already exists. Please log in.");
-        // signOut();
-
-        return;
-      } else {
-        toast.error(userExists?.message);
-      }
-
-      const { data }: { data: TLoginResponse } = await AxiosInstance.post(
+      const { data }: { data: TLoginResponse } = await AxiosInstanceClient.post(
         "/auth/login",
         userData
       );
@@ -61,25 +51,12 @@ const SocialLogin = () => {
         Cookies.set("refreshToken", data.data.refreshToken);
         toast.success("Login successful!");
 
-        const { name, email, image } = currentSession?.user || {};
-
-        setUser({
-          _id: "",
-          name: name || "",
-          email: email || "",
-          mobileNumber: envConfig.social_user_mobile_number as string,
-          profilePhoto: image || "",
-          role: "USER",
-          status: "active",
-          iat: 0,
-          exp: 0,
-        });
-
-        router.push("/");
+        router.push(redirect ? redirect : "/");
+      } else {
+        await signOut();
       }
     } catch (error) {
-      toast.error("An error occurred during login. Please try again.");
-      signOut();
+      await signOut();
     }
   };
 
@@ -93,12 +70,25 @@ const SocialLogin = () => {
         setIsRegistering(true);
         const { email } = currentSession.user;
 
-        const userLoginData: TSocialUserLogin = {
-          email: email as string,
-          password: envConfig.social_user_password as string,
-        };
+        try {
+          const { data: userExists }: { data: TUserExistsResponse } =
+            await AxiosInstanceClient.get(`/auth/user-exists?email=${email}`);
 
-        await handleUserLogin(userLoginData);
+          if (userExists?.data?.exists) {
+            const userLoginData: TSocialUserLogin = {
+              email: email as string,
+              password: envConfig.social_user_password as string,
+            };
+
+            await handleUserLogin(userLoginData);
+            userLoading(true);
+          } else {
+            toast.error("Please register an account and login");
+            await signOut();
+          }
+        } catch (error) {
+          await signOut();
+        }
       }
     };
 

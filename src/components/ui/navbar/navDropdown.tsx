@@ -6,33 +6,35 @@ import {
   DropdownMenu,
   DropdownTrigger,
 } from "@nextui-org/dropdown";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { FC } from "react";
 
 import NavButton from "./navButton";
-import { logout } from "@/src/services/authService";
+import { logout } from "@/src/services/Auth";
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
 import { useUser } from "@/src/context/userProvider";
 import envConfig from "@/src/config/envConfig";
+import { protectedRoute } from "@/src/constant";
 import { signOut } from "next-auth/react";
 
 type TNavDropdownProps = object;
 
 const NavDropdown: FC<TNavDropdownProps> = () => {
-  const { user, setIsLoading, setUser } = useUser();
+  const { user, setIsLoading } = useUser();
   const router = useRouter();
-
-  console.log("user=>", user);
+  const pathname = usePathname();
 
   const handleNavigation = (pathname: string) => {
     router.push(`/profile/${pathname}`);
   };
 
   const handleLogout = async () => {
-    logout();
+    await logout();
     await signOut();
     setIsLoading(true);
-    setUser(null);
+    if (protectedRoute.some((route) => pathname.match(route))) {
+      router.push("/");
+    }
   };
 
   return (
@@ -41,12 +43,12 @@ const NavDropdown: FC<TNavDropdownProps> = () => {
         <Dropdown className="">
           <DropdownTrigger>
             <Avatar
-              className="cursor-pointer text-secondary text-[24px] font-bold"
-              name={user?.name.slice(0, 1)}
+              className={`cursor-pointer text-[24px] font-bold ${user?.profilePhoto === envConfig?.default_image ? "bg-secondary text-default-500" : ""}`}
+              name={user?.name?.slice(0, 1)}
               src={
-                user?.profilePhoto === envConfig?.default_image
-                  ? ""
-                  : user?.profilePhoto
+                user?.profilePhoto !== envConfig?.default_image
+                  ? user?.profilePhoto
+                  : undefined
               }
             />
           </DropdownTrigger>

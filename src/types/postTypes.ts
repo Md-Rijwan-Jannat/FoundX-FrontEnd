@@ -28,3 +28,17 @@ export type TCategory = {
   updatedAt: string;
   __v: number;
 };
+
+export type TFormData = {
+  data: {
+    title: string;
+    dateFound: string;
+    location: string;
+    city: string;
+    category: string;
+    description: string;
+    questions: string[];
+    user: string;
+  };
+  itemImages: File[];
+};

@@ -1,0 +1,18 @@
+import { useMutation } from "@tanstack/react-query";
+import { CreateClaimRequest } from "../services/ClaimRequest";
+import { toast } from "sonner";
+import { FieldValues } from "react-hook-form";
+
+export const useCreateClaimRequestMutation = () => {
+  return useMutation<any, Error, FieldValues>({
+    mutationKey: ["ADD_CLAIM_REQUEST"],
+    mutationFn: async (claimRequestData) =>
+      await CreateClaimRequest(claimRequestData),
+    onSuccess: () => {
+      toast.success("Claim request send successfully", { duration: 2000 });
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+};

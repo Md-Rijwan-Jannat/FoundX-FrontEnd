@@ -1,34 +1,25 @@
 "use client";
 
+import { TInput } from "@/src/types";
 import { Input } from "@nextui-org/input";
 import { FC, useState } from "react";
 import { useFormContext } from "react-hook-form";
-import { FaRegEye, FaRegEyeSlash, FaUserAlt } from "react-icons/fa";
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 
-type TFXInputProps = {
-  className?: string;
-  placeholder: string;
-  startContent?: JSX.Element;
-  size?: "lg" | "sm" | "md";
-  type: string;
-  variant?: "faded" | "flat" | "bordered" | "underlined";
-  radius?: "sm" | "md" | "lg";
-  name: string;
-  defaultValue?: string;
-  isRequired?: boolean;
-};
+interface TFXInputProps extends TInput {}
 
 const FXInput: FC<TFXInputProps> = ({
   className = "w-full",
-  placeholder = "Email",
+  label,
   startContent,
-  size = "md",
+  size = "sm",
   type = "text",
   variant = "faded",
   radius = "md",
   name,
   defaultValue = "",
-  isRequired: required = false,
+  isRequired,
+  placeholder,
 }) => {
   const {
     register,
@@ -63,7 +54,8 @@ const FXInput: FC<TFXInputProps> = ({
         }
         errorMessage={errors?.[name] && (errors?.[name]?.message as string)}
         isInvalid={!!errors?.[name]}
-        isRequired={required}
+        isRequired={isRequired}
+        label={label}
         placeholder={placeholder}
         radius={radius}
         size={size}

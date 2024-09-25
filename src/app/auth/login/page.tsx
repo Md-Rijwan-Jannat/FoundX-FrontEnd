@@ -1,6 +1,6 @@
 "use client";
 
-import LoginForm from "@/src/components/form/LoginForm";
+import LoginForm from "@/src/components/modules/auth/LoginForm";
 import LoginSkeleton from "@/src/components/ui/skeleton/loginSkeleton";
 import { FC, Suspense } from "react";
 
