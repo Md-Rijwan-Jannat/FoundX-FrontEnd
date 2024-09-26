@@ -1,4 +1,4 @@
-import PostForm from "@/src/components/modules/create-post/PostForm";
+import PostForm from "@/src/app/(user)/_components/createPost/PostForm";
 import PostFormSkeleton from "@/src/components/ui/skeleton/postFormSkeleton";
 import { Chip } from "@nextui-org/chip";
 import { FC, Suspense } from "react";

@@ -1,4 +1,5 @@
-import Profile from "@/src/components/modules/userProfile/Profile";
+import Profile from "@/src/app/(user)/_components/userProfile/Profile";
+import PostSkeleton from "@/src/components/ui/postSkeleton";
 import { GetAllMyPosts } from "@/src/services/Post";
 import { FC, Suspense } from "react";
 
@@ -8,7 +9,7 @@ const UserDashboard: FC<TUserDashboardProps> = async () => {
   const { data: myPosts } = await GetAllMyPosts();
 
   return (
-    <Suspense fallback={<p>loading ...</p>}>
+    <Suspense fallback={<PostSkeleton />}>
       <Profile myPosts={myPosts} />
     </Suspense>
   );

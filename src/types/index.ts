@@ -21,3 +21,5 @@ export type TInput = {
 
 export * from "./postTypes";
 export * from "./userTypes";
+export * from "./claimRequestType";
+export * from "./searchType";

@@ -11,20 +11,20 @@ import {
 import { Button } from "@nextui-org/button";
 import { Divider } from "@nextui-org/divider";
 import { formatCalendarDate } from "@/src/utils/dateFormat";
-import FXDateInput from "../../form/FXDateInput";
-import FXInput from "../../form/FXInput";
-import NavBlurEffect from "../../ui/navbar/navBlurEffect";
-import FXSelect from "../../form/FXSelect";
+import FXDateInput from "../../../../components/form/FXDateInput";
+import FXInput from "../../../../components/form/FXInput";
+import FXSelect from "../../../../components/form/FXSelect";
 import { cityOptions } from "@/src/utils/allDistrict";
 import { useGetCategoriesQuery } from "@/src/hooks/category.hook";
 import { FaImages, FaMinus, FaPlus } from "react-icons/fa";
 import { TiDelete } from "react-icons/ti";
 
 import Image from "next/image";
-import FXTextarea from "../../form/FXTextarea";
+import FXTextarea from "../../../../components/form/FXTextarea";
 import { useCreatePostMutation } from "@/src/hooks/post.hook";
 import { useUser } from "@/src/context/userProvider";
 import { useRouter } from "next/navigation";
+import { TUser } from "@/src/types";
 
 type TPostFormProps = object;
 
@@ -33,13 +33,18 @@ const PostForm: FC<TPostFormProps> = () => {
   const [imagePreviews, setImagePreviews] = useState<string[] | []>([]);
 
   const { user } = useUser();
-  const methods = useForm();
+  const methods = useForm({
+    mode: "onChange",
+  });
   const router = useRouter();
-  const { control, handleSubmit } = methods;
+  const { control, handleSubmit, formState } = methods;
+  const { isValid } = formState;
   const { fields, append, remove } = useFieldArray({
     control,
     name: "questions",
   });
+
+  const { _id, email } = (user as unknown as TUser) || {};
 
   // Call post creating hook
   const {
@@ -70,12 +75,12 @@ const PostForm: FC<TPostFormProps> = () => {
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     const formData = new FormData();
 
-    if (user) {
+    if (email) {
       const postData = {
         ...data,
         questions: data?.questions.map((que: { value: string }) => que.value),
         dateFound: formatCalendarDate(data.dateFound),
-        user: user._id,
+        user: _id,
       };
 
       formData.append("data", JSON.stringify(postData));
@@ -127,10 +132,6 @@ const PostForm: FC<TPostFormProps> = () => {
   return (
     <div>
       <FormProvider {...methods}>
-        <NavBlurEffect
-          height="h-[100px]"
-          maxWidth="mx-w-5xl relative -top-[100px] "
-        />
         <form
           className="space-y-3 w-full px-4 py-6 border border-default-50 rounded-lg bg-gradient-to-b from-default-100 "
           onSubmit={handleSubmit(onSubmit)}
@@ -138,7 +139,7 @@ const PostForm: FC<TPostFormProps> = () => {
           <h2 className="text-default-700 text-sm">Pst a found item</h2>
           <Divider className="my-2" style={{ margin: "20px 0px 25px" }} />{" "}
           {/* Flex container for inputs */}
-          <div className="md:flex flex-col md:flex-row items-center space-y-3 md:space-y-0 gap-3 w-full">
+          <div className="md:flex flex-col md:flex-row space-y-3 md:space-y-0 gap-3 w-full">
             <div className="md:flex-1">
               <FXInput
                 isRequired={true}
@@ -158,9 +159,15 @@ const PostForm: FC<TPostFormProps> = () => {
             </div>
           </div>
           {/* Flex container for inputs */}
-          <div className="md:flex flex-col md:flex-row items-center space-y-3 md:space-y-0 gap-3 w-full">
+          <div className="md:flex flex-col md:flex-row space-y-3 md:space-y-0 gap-3 w-full">
             <div className="md:flex-1">
-              <FXInput label="Location" name="location" size="sm" type="text" />
+              <FXInput
+                isRequired={true}
+                label="Location"
+                name="location"
+                size="sm"
+                type="text"
+              />
             </div>
             <div className="md:flex-1">
               <FXSelect
@@ -173,7 +180,7 @@ const PostForm: FC<TPostFormProps> = () => {
             </div>
           </div>
           {/* Selection */}
-          <div className="md:flex flex-col md:flex-row items-center space-y-3 md:space-y-0 gap-3 w-full">
+          <div className="md:flex flex-col md:flex-row space-y-3 md:space-y-0 gap-3 w-full">
             <div className="md:flex-1">
               <FXSelect
                 disabled={!categorySuccess}
@@ -204,7 +211,7 @@ const PostForm: FC<TPostFormProps> = () => {
             </div>
           </div>
           {/* Upload images */}
-          <div className="md:flex flex-col md:flex-row items-center space-y-3 md:space-y-0 gap-3 w-full">
+          <div className="md:flex flex-col md:flex-row space-y-3 md:space-y-0 gap-3 w-full">
             <div className="flex items-center gap-3 flex-wrap">
               {imagePreviews.length > 0 &&
                 imagePreviews.map((image, index) => (
@@ -226,7 +233,7 @@ const PostForm: FC<TPostFormProps> = () => {
             </div>
           </div>
           {/* Flex container for inputs */}
-          <div className="md:flex flex-col md:flex-row items-center space-y-3 md:space-y-0 gap-3 w-full">
+          <div className="md:flex flex-col md:flex-row space-y-3 md:space-y-0 gap-3 w-full">
             <div className="md:flex-1">
               <FXTextarea
                 isRequired={true}
@@ -285,25 +292,20 @@ const PostForm: FC<TPostFormProps> = () => {
           ))}
           <Divider className="my-2" />
           {/* Submit button */}
-          <div className="flex items-end justify-end ">
+          <div className="flex items-end justify-center">
             {" "}
             <Button
-              className="mt-2 z-20"
+              className="mt-2 z-20 w-[200px]"
               color="secondary"
-              isDisabled={postPending}
+              isDisabled={!isValid || postPending}
               isLoading={postPending}
               type="submit"
-              variant="flat"
             >
               Post
             </Button>
           </div>
         </form>
       </FormProvider>
-      <NavBlurEffect
-        height="h-[200px]"
-        maxWidth="mx-w-5xl relative -mt-[100px] right-0"
-      />
     </div>
   );
 };

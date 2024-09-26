@@ -3,11 +3,13 @@ import FXModal from ".";
 import { Button } from "@nextui-org/button";
 import Link from "next/link";
 
-type TAuthenticationModalProps = {
-  itemId: string;
+type TClaimAuthenticationModalProps = {
+  itemId?: string;
 };
 
-const AuthenticationModal: FC<TAuthenticationModalProps> = ({ itemId }) => {
+const ClaimAuthenticationModal: FC<TClaimAuthenticationModalProps> = ({
+  itemId,
+}) => {
   // Construct redirect URLs without /auth prefix
   const registerRedirectUrl = `/auth/register?redirect=/found-items/item/${itemId}`;
   const loginRedirectUrl = `/auth/login?redirect=/found-items/item/${itemId}`;
@@ -27,7 +29,7 @@ const AuthenticationModal: FC<TAuthenticationModalProps> = ({ itemId }) => {
           as={Link}
           className="w-[150px] mb-5"
           color="secondary"
-          href={registerRedirectUrl}
+          href={itemId ? registerRedirectUrl : "/"}
           type="submit"
           variant="faded"
         >
@@ -47,4 +49,4 @@ const AuthenticationModal: FC<TAuthenticationModalProps> = ({ itemId }) => {
   );
 };
 
-export default AuthenticationModal;
+export default ClaimAuthenticationModal;

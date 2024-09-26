@@ -28,7 +28,7 @@ const PostItemPage: FC<TPostItemPageProps> = async ({ params }) => {
 
   return (
     <Container>
-      <div className="mx-auto my-3 max-w-[720px]">
+      <div className="mx-auto my-3 max-w-[600px]">
         <PostCard post={post} />
       </div>
     </Container>

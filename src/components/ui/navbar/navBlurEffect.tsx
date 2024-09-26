@@ -12,7 +12,7 @@ const NavBlurEffect: FC<TNavBlurEffectProps> = ({
   height = "h-[70px] md:h-[150px]",
 }) => {
   return (
-    <div className={`${maxWidth} pt-5`}>
+    <div className={`${maxWidth}`}>
       <div
         className={`${width} ${height} bg-gradient-to-r from-secondary-500 to-secondary-300 opacity-40 absolute top-0`}
         style={{ filter: "blur(80px)" }}

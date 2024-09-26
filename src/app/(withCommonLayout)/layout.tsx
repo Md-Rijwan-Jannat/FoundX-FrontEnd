@@ -4,6 +4,7 @@ import { Navbar } from "@/src/components/ui/navbar";
 import NavBlurEffect from "@/src/components/ui/navbar/navBlurEffect";
 import MobileNumberReminder from "@/src/components/ui/modal/mobileNumberReminderModal";
 import { Metadata } from "next";
+import Container from "@/src/components/ui/container";
 
 type TCommonLayoutProps = {
   children: React.ReactNode;
@@ -28,9 +29,11 @@ const CommonLayout: FC<TCommonLayoutProps> = ({ children }) => {
     <div>
       <NavBlurEffect />
       <Navbar />
-      <main className="min-h-screen">{children}</main>
-      <MobileNumberReminder />
-      <Footer />
+      <Container>
+        <main className="min-h-screen">{children}</main>
+        <MobileNumberReminder />
+        <Footer />
+      </Container>
     </div>
   );
 };

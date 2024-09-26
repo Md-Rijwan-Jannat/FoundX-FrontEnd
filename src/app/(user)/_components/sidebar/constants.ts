@@ -8,8 +8,8 @@ export const userLink = [
     label: "Create Post",
   },
   {
-    href: "/profile/clam-requests",
-    label: "Clam Request",
+    href: "/profile/claim-requests",
+    label: "Claim Request",
   },
   {
     href: "/profile/setting",

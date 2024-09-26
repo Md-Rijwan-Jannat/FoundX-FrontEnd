@@ -5,7 +5,6 @@ import {
   ModalHeader,
   ModalBody,
   useDisclosure,
-  ModalFooter,
 } from "@nextui-org/modal";
 import { Chip } from "@nextui-org/chip";
 import { Button } from "@nextui-org/button";
@@ -31,6 +30,7 @@ type TFXModalProps = {
     | "danger"
     | undefined;
   buttonText: string;
+  // Updated type to accept a function as children that passes `onOpenChange`
   children: ReactNode;
   modalSize?:
     | "sm"
@@ -44,6 +44,9 @@ type TFXModalProps = {
     | "5xl"
     | "full"
     | undefined;
+  buttonRadius?: "sm" | "md" | "lg" | "full" | "none" | undefined;
+  endContent?: JSX.Element;
+  buttonSize?: "sm" | "md" | "lg" | undefined;
 };
 
 const FXModal: FC<TFXModalProps> = ({
@@ -54,6 +57,9 @@ const FXModal: FC<TFXModalProps> = ({
   buttonText,
   children,
   modalSize,
+  buttonRadius,
+  endContent,
+  buttonSize,
 }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -61,8 +67,11 @@ const FXModal: FC<TFXModalProps> = ({
     <>
       <Button
         className={buttonClassName}
-        variant={buttonVariant}
         color={buttonColor}
+        endContent={endContent}
+        radius={buttonRadius}
+        size={buttonSize}
+        variant={buttonVariant}
         onPress={onOpen}
       >
         {buttonText}
@@ -76,28 +85,14 @@ const FXModal: FC<TFXModalProps> = ({
         onOpenChange={onOpenChange}
       >
         <ModalContent>
-          {(onClose) => (
+          {(_onClose) => (
             <>
-              {/* Header with Chip */}
               <ModalHeader className="-mt-2">
                 <Chip color="secondary" variant="dot">
                   {title}
                 </Chip>
               </ModalHeader>
               <ModalBody>{children}</ModalBody>
-              {/* <ModalFooter>
-                <Button
-                  color="danger"
-                  size="sm"
-                  variant="light"
-                  onPress={onClose}
-                >
-                  Close
-                </Button>
-                <Button color="secondary" size="sm" onPress={onClose}>
-                  Action
-                </Button>
-              </ModalFooter> */}
             </>
           )}
         </ModalContent>

@@ -32,7 +32,9 @@ const FXInput: FC<TFXInputProps> = ({
     <div>
       <Input
         style={{ width: "100%" }}
-        {...register(name)}
+        {...register(name, {
+          required: isRequired ? `${label || name} is required` : false,
+        })}
         aria-label={name}
         className={className}
         defaultValue={defaultValue}

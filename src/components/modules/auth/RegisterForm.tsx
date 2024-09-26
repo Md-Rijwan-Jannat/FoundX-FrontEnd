@@ -26,7 +26,7 @@ export type TSessionProps = {
 };
 
 const RegisterForm: FC = () => {
-  const { setIsLoading: userLoading } = useUser();
+  const { setIsLoading: userLoading, isLoading } = useUser();
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect");
   const router = useRouter();
@@ -117,6 +117,7 @@ const RegisterForm: FC = () => {
                 <Button
                   className="w-32 mt-3"
                   color="secondary"
+                  isDisabled={isPending || isLoading}
                   isLoading={isPending}
                   radius="md"
                   size="md"

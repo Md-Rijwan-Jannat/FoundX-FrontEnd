@@ -41,3 +41,44 @@ export const GetAllClaimRequests = async () => {
     throw new Error(error.message);
   }
 };
+
+export const GetMyClaimRequests = async () => {
+  try {
+    const fetchOptions = {
+      next: {
+        tags: ["claim-request"],
+      },
+    };
+
+    const { data } = await AxiosInstance.get(
+      "/claim-request/my-claim-request",
+      {
+        fetchOptions,
+      }
+    );
+
+    return data;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+};
+
+export const UpdateClaimantStatus = async (
+  claimantStatusData: FieldValues
+): Promise<any> => {
+  try {
+    const { id, statusData } = claimantStatusData;
+    const { data } = await AxiosInstance.put(
+      `/claim-request/${id}`,
+      statusData
+    );
+
+    revalidateTag("claim-requests");
+
+    console.log(data);
+
+    return data;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+};

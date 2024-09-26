@@ -13,12 +13,15 @@ import { useUser } from "@/src/context/userProvider"; // Adjust the import path 
 import envConfig from "@/src/config/envConfig";
 import { Button } from "@nextui-org/button";
 import Link from "next/link";
+import { TUser } from "@/src/types";
 
 type TMobileNumberReminderProps = object;
 
 const MobileNumberReminder: FC<TMobileNumberReminderProps> = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const { user } = useUser();
+
+  const {} = (user as unknown as TUser) || {};
 
   useEffect(() => {
     const checkUserMobileNumber = () => {

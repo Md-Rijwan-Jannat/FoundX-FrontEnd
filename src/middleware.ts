@@ -17,13 +17,8 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const user = (await currentUser()) as TDecodeUser | undefined;
 
-  console.log("user=>", user);
-
-  const accessToken = cookies().get("accessToken");
-  const refreshToken = cookies().get("refreshToken");
-
   // Handle authentication protected route
-  if (!user && !accessToken && !refreshToken) {
+  if (!user) {
     const isAuthPage = AuthPathname.includes(pathname);
 
     if (!isAuthPage) {
@@ -35,19 +30,16 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  if (
-    user?.role &&
-    accessToken &&
-    refreshToken &&
-    RoleBasedRoutes[user?.role as TRoleProps]
-  ) {
-    const routes = RoleBasedRoutes[user?.role as TRoleProps];
+  // Handle role-based routing
+  if (user?.role && RoleBasedRoutes[user.role as TRoleProps]) {
+    const routes = RoleBasedRoutes[user.role as TRoleProps];
 
     if (routes.some((route) => pathname.match(route))) {
       return NextResponse.next();
     }
   }
 
+  // Redirect to home if no match
   return NextResponse.redirect(new URL("/", request.url));
 }
 

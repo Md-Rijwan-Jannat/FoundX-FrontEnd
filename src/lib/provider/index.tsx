@@ -10,6 +10,8 @@ import { Toaster } from "sonner";
 import UserProvider from "@/src/context/userProvider";
 import AuthSectionProvider from "@/src/context/authSectionProvider";
 
+const queryClient = new QueryClient();
+
 export interface ProvidersProps {
   children: React.ReactNode;
   themeProps?: ThemeProviderProps;
@@ -17,18 +19,17 @@ export interface ProvidersProps {
 
 export function Providers({ children, themeProps }: ProvidersProps) {
   const router = useRouter();
-  const queryClient = new QueryClient();
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthSectionProvider>
-        <UserProvider>
+      <UserProvider>
+        <AuthSectionProvider>
           <NextUIProvider navigate={router.push}>
             <Toaster position="bottom-right" />
             <NextThemesProvider {...themeProps}>{children}</NextThemesProvider>
           </NextUIProvider>
-        </UserProvider>
-      </AuthSectionProvider>
+        </AuthSectionProvider>
+      </UserProvider>
     </QueryClientProvider>
   );
 }

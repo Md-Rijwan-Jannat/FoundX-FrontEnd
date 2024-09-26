@@ -35,10 +35,10 @@ const ImageGallery: FC<TImageGalleryProps> = ({ images }) => {
             alt={`image${index}`}
             className={`${
               images.length === 1
-                ? "h-[600px]"
+                ? "h-[300px]"
                 : images.length === 2
-                  ? "h-[300px]"
-                  : "h-[300px]"
+                  ? "h-[250px]"
+                  : "h-[250px]"
             } object-cover object-center w-full`}
             height={images.length === 1 ? 600 : 300}
             src={image}

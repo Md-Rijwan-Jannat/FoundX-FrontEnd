@@ -14,7 +14,7 @@ const NavLink: FC<TNavLinkProps> = ({ item }) => {
         pathname === item.href
           ? "text-secondary font-semibold"
           : `text-default-700`
-      }  transition-colors duration-500`}
+      }  transition-colors duration-500 text-sm mx-2`}
       color="foreground"
       href={item.href}
     >

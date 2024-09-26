@@ -10,7 +10,7 @@ import { fontSans } from "@/src/config/fonts";
 export const metadata: Metadata = {
   title: {
     default: "FoundX",
-    template: "Found your loss item",
+    template: "Found Your Ios Item",
   },
   description: siteConfig.description,
   icons: {
@@ -36,7 +36,7 @@ export default function RootLayout({
       <body
         className={clsx(
           "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable,
+          fontSans.variable
         )}
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>

@@ -34,7 +34,7 @@ interface TLoginResponse {
 const SocialLogin = () => {
   const { data: currentSession } = useSession();
   const [isRegistering, setIsRegistering] = useState(false);
-  const { setIsLoading: userLoading } = useUser();
+  const { setIsLoading: userLoading, isLoading } = useUser();
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect");
   const router = useRouter();
@@ -100,6 +100,7 @@ const SocialLogin = () => {
       <Button
         className="w-full"
         color="default"
+        isDisabled={isLoading}
         radius="full"
         size="md"
         startContent={<FcGoogle size={20} />}
@@ -112,6 +113,7 @@ const SocialLogin = () => {
       <Button
         className="w-full"
         color="default"
+        isDisabled={isLoading}
         radius="full"
         size="md"
         startContent={<FaGithub size={20} />}

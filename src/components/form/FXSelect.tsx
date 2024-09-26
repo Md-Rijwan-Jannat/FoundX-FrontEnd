@@ -1,3 +1,5 @@
+"use client";
+
 import { FC } from "react";
 import { Select, SelectItem } from "@nextui-org/select";
 import { TInput } from "@/src/types";

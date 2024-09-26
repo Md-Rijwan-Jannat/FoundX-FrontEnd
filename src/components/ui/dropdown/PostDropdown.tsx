@@ -8,11 +8,12 @@ import {
   DropdownItem,
 } from "@nextui-org/dropdown";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { TPost } from "@/src/types";
+import { TPost, TUser } from "@/src/types";
 import { Button } from "@nextui-org/button";
 import envConfig from "@/src/config/envConfig";
 import { useRouter } from "next/navigation";
 import { useUser } from "../../../context/userProvider";
+import { toast, Toaster } from "sonner";
 
 type TPostDropdownProps = {
   post: TPost;
@@ -21,11 +22,14 @@ type TPostDropdownProps = {
 const PostDropdown: FC<TPostDropdownProps> = ({ post }) => {
   const { user: currentUser } = useUser();
   const router = useRouter();
+
   const { _id, user } = post || {};
+  const { email } = (currentUser as unknown as TUser) || {};
 
   // Function to copy the post link
   const copyToClipboard = useCallback(() => {
     navigator.clipboard.writeText(`${envConfig.baseUrl}/found-items/${_id}`);
+    toast.success("Link copied to clipboard!");
   }, [_id]);
 
   // Handle navigate
@@ -58,8 +62,8 @@ const PostDropdown: FC<TPostDropdownProps> = ({ post }) => {
               Copy Link
             </DropdownItem>
             <DropdownItem
-              className={`${user?.email !== currentUser?.email && "hidden"}`}
               key="edit"
+              className={`${user?.email !== email && "hidden"}`}
             >
               Edit Post
             </DropdownItem>
@@ -73,7 +77,7 @@ const PostDropdown: FC<TPostDropdownProps> = ({ post }) => {
             </DropdownItem>
             <DropdownItem
               key="delete"
-              className={`text-danger ${user?.email !== currentUser?.email && "hidden"}`}
+              className={`text-danger ${user?.email !== email && "hidden"}`}
               color="danger"
               variant="flat"
             >
@@ -82,7 +86,6 @@ const PostDropdown: FC<TPostDropdownProps> = ({ post }) => {
           </DropdownMenu>
         </Dropdown>
       </div>
-
       {/* Other components */}
     </div>
   );

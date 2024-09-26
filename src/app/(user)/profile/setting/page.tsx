@@ -1,3 +1,4 @@
+import NoDataAnimation from "@/src/components/ui/noData";
 import { FC } from "react";
 
 type TSettingPageProps = object;
@@ -5,7 +6,7 @@ type TSettingPageProps = object;
 const SettingPage: FC<TSettingPageProps> = () => {
   return (
     <div>
-      <h2>This is a SettingPage component</h2>
+      <NoDataAnimation />
     </div>
   );
 };

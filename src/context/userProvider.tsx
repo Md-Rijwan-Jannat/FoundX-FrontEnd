@@ -29,11 +29,20 @@ const UserProvider: FC<TUserProviderProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   const handleUser = async () => {
-    const fetchedUser = (await currentUser()) as TDecodeUser;
+    try {
+      const fetchedUser = (await currentUser()) as TDecodeUser | null;
 
-    setUser(fetchedUser);
-
-    setIsLoading(false);
+      if (fetchedUser) {
+        setUser(fetchedUser);
+      } else {
+        setUser(null);
+      }
+    } catch (error) {
+      console.error("Failed to fetch user:", error);
+      setUser(null); // Ensure user is set to null on failure
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {

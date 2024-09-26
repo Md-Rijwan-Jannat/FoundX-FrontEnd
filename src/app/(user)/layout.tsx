@@ -1,7 +1,7 @@
 import { FC, ReactNode } from "react";
 import { Metadata } from "next";
 import Container from "@/src/components/ui/container";
-import Sidebar from "@/src/components/modules/sidebar";
+import Sidebar from "@/src/app/(user)/_components/sidebar";
 import { ProfileNavbar } from "./_components/navbar";
 
 type TUserProfileProps = { children: ReactNode };
@@ -17,9 +17,9 @@ const UserProfile: FC<TUserProfileProps> = ({ children }) => {
     <>
       <ProfileNavbar />
       <Container>
-        <div className="flex flex-col md:flex-row gap-10">
+        <div className="flex flex-col md:flex-row gap-10 scrollbar-hide">
           {/* Fixed Sidebar */}
-          <div className="hidden md:block w-full md:w-[200px] lg:w-[250px] fixed top-[80px] h-full z-10">
+          <div className="block w-full md:w-[200px] lg:w-[250px] md:fixed top-[80px] h-full z-10">
             <Sidebar />
           </div>
 

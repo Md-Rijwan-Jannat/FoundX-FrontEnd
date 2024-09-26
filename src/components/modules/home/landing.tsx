@@ -5,10 +5,18 @@ import Player from "lottie-react";
 import { IoSearch } from "react-icons/io5";
 import SearchModal from "../../ui/navbar/searchModal";
 import bannerAnimationJSON from "@/src/assets/banner/BannerAnimation.json";
+import { useUser } from "@/src/context/userProvider";
+import PostAuthenticationModal from "../../ui/modal/PostAuthenticationModal";
+import Link from "next/link";
+import { TUser } from "@/src/types";
 
 type TLandingProps = object;
 
 const Landing: FC<TLandingProps> = () => {
+  const { user } = useUser();
+
+  const { email } = (user as unknown as TUser) || {};
+
   return (
     <div
       className={`flex flex-col-reverse lg:flex-row items-center justify-between pb-10 rounded-lg -mt-10`}
@@ -34,14 +42,18 @@ const Landing: FC<TLandingProps> = () => {
             text="Found your item"
             variant="shadow"
           />
-          <Button
-            className="w-[110px] text-default-700"
-            color="secondary"
-            radius="full"
-            variant="bordered"
-          >
-            Post Item
-          </Button>
+          {email ? (
+            <Button
+              className="w-[110px] text-default-700"
+              color="secondary"
+              radius="full"
+              variant="bordered"
+            >
+              <Link href={"/profile/create-post"}> Post Item</Link>
+            </Button>
+          ) : (
+            <PostAuthenticationModal />
+          )}
         </div>
       </div>
 

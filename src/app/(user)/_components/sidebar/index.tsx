@@ -12,11 +12,15 @@ import { usePathname, useRouter } from "next/navigation";
 import { protectedRoute } from "@/src/constant";
 import { IoImageOutline } from "react-icons/io5";
 import { signOut } from "next-auth/react";
+import { TUser } from "@/src/types";
 
 const Sidebar: FC = () => {
   const { user, setIsLoading } = useUser();
   const pathname = usePathname();
   const router = useRouter();
+
+  const { profilePhoto, name } = (user as unknown as TUser) || {};
+
   const handleLogout = async () => {
     await logout();
     await signOut();
@@ -32,12 +36,12 @@ const Sidebar: FC = () => {
       <div className="bg-default-50 rounded-md px-2 py-5 max-h-fit">
         <div className="flex flex-col items-center justify-center gap-3">
           <Avatar
-            className={`cursor-pointer text-[24px] font-bold ${user?.profilePhoto === envConfig?.default_image ? "bg-secondary text-default-500" : ""}`}
-            name={user?.name?.slice(0, 1)}
+            className={`cursor-pointer text-[24px] font-bold ${profilePhoto === envConfig?.default_image ? "bg-secondary text-white" : ""}`}
+            name={name?.slice(0, 1)}
             size="lg"
             src={
-              user?.profilePhoto !== envConfig?.default_image
-                ? user?.profilePhoto
+              profilePhoto !== envConfig?.default_image
+                ? profilePhoto
                 : undefined
             }
           />
@@ -52,7 +56,7 @@ const Sidebar: FC = () => {
           >
             Upload Profile
           </Button>
-          <h2 className="text-sm text-default-600">{user?.name}</h2>
+          <h2 className="text-sm text-default-600">{name}</h2>
           <Button
             color="danger"
             size="sm"

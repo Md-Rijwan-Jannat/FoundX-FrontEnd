@@ -21,7 +21,7 @@ import FXForm from "../../form/FXForm";
 type TLoginFormProps = object;
 
 const LoginForm: FC<TLoginFormProps> = () => {
-  const { setIsLoading: userLoading } = useUser();
+  const { setIsLoading: userLoading, isLoading } = useUser();
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect");
   const router = useRouter();
@@ -84,6 +84,7 @@ const LoginForm: FC<TLoginFormProps> = () => {
               <Button
                 className="w-32 mt-3"
                 color="secondary"
+                isDisabled={isPending || isLoading}
                 isLoading={isPending}
                 radius="md"
                 size="md"

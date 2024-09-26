@@ -28,13 +28,6 @@ export const ProfileNavbar = () => {
         <NavbarItem className="flex gap-2">
           <ThemeSwitch />
         </NavbarItem>
-
-        {/* Home Button */}
-        <NavbarItem>
-          <Button as={Link} color="secondary" href="/" variant="faded">
-            Home
-          </Button>
-        </NavbarItem>
       </NavbarContent>
     </NextUINavbar>
   );

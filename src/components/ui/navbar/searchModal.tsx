@@ -1,4 +1,5 @@
 "use client";
+
 import { Button } from "@nextui-org/button";
 import {
   Modal,
@@ -7,59 +8,14 @@ import {
   ModalHeader,
   useDisclosure,
 } from "@nextui-org/modal";
-import { FC, ReactNode, useEffect } from "react";
-
-import { searchInput } from "./searchInput";
-
-type TSearchModalProps = {
-  text?: string; // Button text
-  isIconOnly?: boolean; // Whether the button is icon only
-  variant?:
-    | "flat"
-    | "solid"
-    | "bordered"
-    | "light"
-    | "faded"
-    | "shadow"
-    | "ghost"
-    | undefined; // Button variant
-  color?:
-    | "default"
-    | "primary"
-    | "secondary"
-    | "success"
-    | "warning"
-    | "danger"
-    | undefined;
-  endContent?: ReactNode;
-  modalSize?:
-    | "lg"
-    | "sm"
-    | "md"
-    | "full"
-    | "xl"
-    | "2xl"
-    | "xs"
-    | "3xl"
-    | "4xl"
-    | "5xl"
-    | undefined;
-  modalPlacement?: "top" | "center" | "bottom";
-  modalContent?: ReactNode;
-  noDataMessage?: string;
-  classNames?: Partial<
-    Record<
-      | "wrapper"
-      | "base"
-      | "backdrop"
-      | "header"
-      | "body"
-      | "footer"
-      | "closeButton",
-      string
-    >
-  >;
-};
+import { FC, useEffect, useRef, useState } from "react";
+import SearchInput from "./searchInput";
+import { Divider } from "@nextui-org/divider";
+import { useDebounce } from "@/src/hooks/debounce.hook";
+import { useSearchItemsMutation } from "@/src/hooks/search.hook";
+import { TSearchModalProps } from "@/src/types";
+import SearchResultCard from "../cards/searchResultCard";
+import { useRouter } from "next/navigation";
 
 const SearchModal: FC<TSearchModalProps> = ({
   text,
@@ -69,29 +25,91 @@ const SearchModal: FC<TSearchModalProps> = ({
   endContent,
   modalSize = "md",
   modalPlacement = "top",
-  modalContent,
   noDataMessage = "No Data",
-  classNames = {}, // New classNames prop
+  classNames = {},
 }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [searchValue, setSearchValue] = useState<string>("");
+  const [searchResults, setSearchResults] = useState([]);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
+
+  const {
+    mutate: searchItemsFn,
+    data: searchData,
+    isPending,
+    isSuccess,
+  } = useSearchItemsMutation();
+  const searchTerm = useDebounce(searchValue);
+
+  console.log(searchData);
 
   useEffect(() => {
+    if (searchTerm) {
+      searchItemsFn(searchTerm);
+    }
+  }, [searchTerm]);
+
+  useEffect(() => {
+    if (!searchTerm) {
+      setSearchResults([]);
+    }
+    if (!isPending && isSuccess && searchData && searchTerm) {
+      setSearchResults(searchData?.data ?? []);
+    }
+  }, [isPending, isSuccess, searchData, searchTerm]);
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault();
+    const value = event.target.value;
+
+    setSearchValue(value);
+  };
+
+  // Only trigger search on "Enter" key press or button click
+  const handleSeeAll = (query: string) => {
+    const splitQuery = query.toString().trim().split(" ").join("+");
+
+    // Navigate to the page with the query
+    if (searchTerm) {
+      router.push(`/found-items?query=${splitQuery}`);
+    }
+  };
+
+  // Press enter key to see all items
+  useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
-      // Detect Control + K
+      if (event.key === "Enter") {
+        handleSeeAll(searchTerm);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [searchTerm]);
+
+  // Control + K to open search modal
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
       if (event.ctrlKey && event.key === "k") {
         event.preventDefault();
         onOpen();
       }
     };
 
-    // Add event listener for keydown
     window.addEventListener("keydown", handleKeyPress);
 
-    // Clean up the event listener
     return () => {
       window.removeEventListener("keydown", handleKeyPress);
     };
   }, [onOpen]);
+
+  useEffect(() => {
+    if (isOpen && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isOpen]);
 
   return (
     <>
@@ -107,6 +125,7 @@ const SearchModal: FC<TSearchModalProps> = ({
       </Button>
 
       <Modal
+        hideCloseButton
         backdrop={"blur"}
         className={`m-2 mt-16 ${classNames.wrapper || ""}`}
         isOpen={isOpen}
@@ -116,16 +135,21 @@ const SearchModal: FC<TSearchModalProps> = ({
       >
         <ModalContent className={classNames.base}>
           <ModalHeader className={`flex flex-col ${classNames.header || ""}`}>
-            <div className="mt-5">{searchInput}</div>
+            <SearchInput ref={inputRef} onChange={handleSearchChange} />
+            <Divider className="mt-3 mb-4" />
           </ModalHeader>
-          <ModalBody className={classNames.body}>
-            {modalContent ? (
-              <div>{modalContent}</div>
-            ) : (
-              <p className="flex items-center justify-center text-default-700 my-5">
-                {noDataMessage}
-              </p>
-            )}
+          <ModalBody>
+            <SearchResultCard
+              noDataMessage={noDataMessage}
+              searchResults={searchResults}
+            />
+            <Button
+              className="text-default-600"
+              size="sm"
+              onClick={() => handleSeeAll(searchTerm)}
+            >
+              See All
+            </Button>
           </ModalBody>
         </ModalContent>
       </Modal>

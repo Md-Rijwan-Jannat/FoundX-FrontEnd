@@ -16,6 +16,7 @@ import { useUser } from "@/src/context/userProvider";
 import envConfig from "@/src/config/envConfig";
 import { protectedRoute } from "@/src/constant";
 import { signOut } from "next-auth/react";
+import { TUser } from "@/src/types";
 
 type TNavDropdownProps = object;
 
@@ -23,6 +24,8 @@ const NavDropdown: FC<TNavDropdownProps> = () => {
   const { user, setIsLoading } = useUser();
   const router = useRouter();
   const pathname = usePathname();
+
+  const { profilePhoto, name, email } = (user as unknown as TUser) || {};
 
   const handleNavigation = (pathname: string) => {
     router.push(`/profile/${pathname}`);
@@ -39,15 +42,15 @@ const NavDropdown: FC<TNavDropdownProps> = () => {
 
   return (
     <>
-      {user?.email ? (
+      {email ? (
         <Dropdown className="">
           <DropdownTrigger>
             <Avatar
-              className={`cursor-pointer text-[24px] font-bold ${user?.profilePhoto === envConfig?.default_image ? "bg-secondary text-default-500" : ""}`}
-              name={user?.name?.slice(0, 1)}
+              className={`cursor-pointer text-[24px] font-bold ${profilePhoto === envConfig?.default_image ? "bg-secondary text-white" : ""}`}
+              name={name?.slice(0, 1)}
               src={
-                user?.profilePhoto !== envConfig?.default_image
-                  ? user?.profilePhoto
+                profilePhoto !== envConfig?.default_image
+                  ? profilePhoto
                   : undefined
               }
             />
@@ -56,11 +59,8 @@ const NavDropdown: FC<TNavDropdownProps> = () => {
             <DropdownItem onClick={() => handleNavigation("")}>
               Profile
             </DropdownItem>
-            <DropdownItem onClick={() => handleNavigation("about")}>
-              About
-            </DropdownItem>
-            <DropdownItem onClick={() => handleNavigation("clam-requests")}>
-              Clam Requests
+            <DropdownItem onClick={() => handleNavigation("claim-requests")}>
+              Claim Requests
             </DropdownItem>
             <DropdownItem onClick={() => handleNavigation("create-post")}>
               Create Post

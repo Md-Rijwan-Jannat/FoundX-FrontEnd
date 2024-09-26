@@ -1,11 +1,12 @@
-import PostCard from "@/src/components/ui/cards/postCard";
-import Container from "@/src/components/ui/container";
 import AxiosInstance from "@/src/lib/AxiosInstance/axiosInstance";
-import { TPost } from "@/src/types";
-import { FC } from "react";
+import { FC, Suspense } from "react";
 import { Metadata } from "next";
+import FoundItem from "@/src/components/modules/foundItem/FoundItem";
+import PostSkeleton from "@/src/components/ui/postSkeleton";
 
-type TFoundItemPageProps = object;
+type TFoundItemPageProps = {
+  searchParams: any;
+};
 
 // Define metadata for the Found Item page
 export const metadata: Metadata = {
@@ -15,17 +16,24 @@ export const metadata: Metadata = {
   keywords: ["found items", "lost and found", "FoundX", "reunite lost items"],
 };
 
-const FoundItemPage: FC<TFoundItemPageProps> = async () => {
-  const { data } = await AxiosInstance.get(`/items`);
+const FoundItemPage: FC<TFoundItemPageProps> = async ({ searchParams }) => {
+  const query = new URLSearchParams(searchParams);
+
+  const { data } = await AxiosInstance.get(`/items`, {
+    params: {
+      searchTerm: query.get("query"),
+      category: query.get("category"),
+    },
+  });
+
+  const foundItems = data?.data;
+
+  console.log(searchParams);
 
   return (
-    <Container>
-      <div className="mx-auto my-3 max-w-[720px]">
-        {data?.data?.map((post: TPost) => (
-          <PostCard key={post?._id} post={post} />
-        ))}
-      </div>
-    </Container>
+    <Suspense fallback={<PostSkeleton />}>
+      <FoundItem foundItems={foundItems} />
+    </Suspense>
   );
 };
 

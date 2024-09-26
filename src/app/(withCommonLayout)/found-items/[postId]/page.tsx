@@ -1,11 +1,11 @@
-import PostDetails from "@/src/components/modules/psot-details/PostDetails";
-import RecentPostSlider from "@/src/components/modules/psot-details/RecentPostSlider";
+import RecentPostSlider from "@/src/components/modules/psotDetails/RecentPostSlider";
 import Container from "@/src/components/ui/container";
 import PostDetailsSkeleton from "@/src/components/ui/skeleton/postDetailsSkeleton";
 import { GetAllRecentPosts, GetSinglePost } from "@/src/services/Post";
 import { TPost } from "@/src/types";
 import { FC, Suspense } from "react";
 import { Metadata } from "next";
+import PostDetails from "@/src/components/modules/psotDetails";
 
 type TFoundItemDetailsPageProps = { params: { postId: string } };
 
@@ -35,12 +35,10 @@ const FoundItemDetailsPage: FC<TFoundItemDetailsPageProps> = async ({
   const posts = data as TPost[];
 
   return (
-    <Container>
-      <Suspense fallback={<PostDetailsSkeleton />}>
-        <PostDetails post={post} />
-        <RecentPostSlider posts={posts} />
-      </Suspense>
-    </Container>
+    <Suspense fallback={<PostDetailsSkeleton />}>
+      <PostDetails post={post} />
+      <RecentPostSlider posts={posts} />
+    </Suspense>
   );
 };
 
